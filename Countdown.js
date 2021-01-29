@@ -1,5 +1,6 @@
-// Countdown timer that is accurate to the seconds
+// Countdown timer that is accurate to the second and accounts for Daylight Savings Time (DST)
 
+// All of these CSS classes must be present on page in order for countdown timer to function
 const COUNTDOWN_CLASSES = ["seedDate", "bText", "bDelayText", "years", "months", "days",
 		"hours", "minutes", "seconds", "aText", "aDelayText", "loopTime", "loopUnit",
 		"loopLimit", "endText", "delayTime", "delayUnit", "delayDisplay", "dst",
@@ -83,14 +84,20 @@ function buildTimer(timerParams, num) {
 	let now = new Date();
 
 	// Parameters are stored in innerHTML
-    let seedDate = new Date((timerParams.seedDate === "") ? "December 3, 2015 00:00:00 UTC" : timerParams.seedDate);
+    let seedDate = new Date((timerParams.seedDate === "") ? "December 3, 2015 00:00:00 UTC" 
+        : timerParams.seedDate);
     // Convert inputted loop/delay time to specified time period in milliseconds
-    let loopUnit = (timerParams.loopUnit === "") ? "s" : timerParams.loopUnit;
-    let loopTime = (isNaN(timerParams.loopTime)) ? 0 : convertTimeToMilliseconds(Number(timerParams.loopTime), loopUnit);
-    let loopLimit = (isNaN(timerParams.loopLimit)) ? 0 : Number(timerParams.loopLimit);
+    let loopUnit = (timerParams.loopUnit === "") ? "s" 
+        : timerParams.loopUnit;
+    let loopTime = (isNaN(timerParams.loopTime)) ? 0 
+        : convertTimeToMilliseconds(Number(timerParams.loopTime), loopUnit);
+    let loopLimit = (isNaN(timerParams.loopLimit)) ? 0 
+        : Number(timerParams.loopLimit);
 
-    let delayUnit = (timerParams.delayUnit === "") ? "s" : timerParams.delayUnit;
-	let delayTime = (isNaN(timerParams.delayTime)) ? 0 : convertTimeToMilliseconds(Number(timerParams.delayTime), delayUnit);
+    let delayUnit = (timerParams.delayUnit === "") ? "s" 
+        : timerParams.delayUnit;
+    let delayTime = (isNaN(timerParams.delayTime)) ? 0 
+        : convertTimeToMilliseconds(Number(timerParams.delayTime), delayUnit);
 
 	let endDate = findEndDate(now, seedDate, 0, loopTime, loopLimit);
 	let endDate2 = findEndDate(now, seedDate, delayTime, loopTime, loopLimit);
@@ -102,8 +109,10 @@ function buildTimer(timerParams, num) {
 	
 	// Accounts for Daylight Saving Time (DST) between now and target date 
 	// unless otherwise specified
-	let dstOffset = (timerParams.dst === "") ? (now.getTimezoneOffset() - endDate.getTimezoneOffset()) * 60 * 1000 : 0;
-	let dstOffset2 = (timerParams.dst === "") ? (now.getTimezoneOffset() - endDate2.getTimezoneOffset()) * 60 * 1000 : 0;
+    let dstOffset = (timerParams.dst === "") ? 
+        (now.getTimezoneOffset() - endDate.getTimezoneOffset()) * 60 * 1000 : 0;
+    let dstOffset2 = (timerParams.dst === "") ? 
+        (now.getTimezoneOffset() - endDate2.getTimezoneOffset()) * 60 * 1000 : 0;
     
     // Total time between now and target date in milliseconds converted
     // to certain time period
@@ -123,7 +132,8 @@ function buildTimer(timerParams, num) {
         s: 0
     };
 
-    let dateFormat = (timerParams.dateFormat === "") ? "YY MM DD hh mm ss" : timerParams.dateFormat;
+    let dateFormat = (timerParams.dateFormat === "") ? "YY MM DD hh mm ss" 
+        : timerParams.dateFormat;
 	for (let pos = 0; pos < dateFormat.length; pos++) {
 		unitCounts[dateFormat.charAt(pos)]++;
     }
@@ -225,7 +235,8 @@ function buildTimer(timerParams, num) {
             for (let unit of Object.keys(TIME_UNIT_ABBR)) {
                 let unitAbbr = TIME_UNIT_ABBR[unit];
                 if (unitCounts[unitAbbr] !== 0) {
-                    $("#" + unit + "_" + num).html(unitLeadingZeroes2[unitAbbr] + timeDiffByUnit2[unitAbbr] + timeUnits[unit] + sep);
+                    $("#" + unit + "_" + num).html(unitLeadingZeroes2[unitAbbr] + 
+                        timeDiffByUnit2[unitAbbr] + timeUnits[unit] + sep);
                 }
             }
         } else {
@@ -250,7 +261,8 @@ function buildTimer(timerParams, num) {
         for (let unit of Object.keys(TIME_UNIT_ABBR)) {
             let unitAbbr = TIME_UNIT_ABBR[unit];
             if (unitCounts[unitAbbr] !== 0) {
-                $("#" + unit + "_" + num).html(unitLeadingZeroes[unitAbbr] + timeDiffByUnit[unitAbbr] + timeUnits[unit] + sep);
+                $("#" + unit + "_" + num).html(unitLeadingZeroes[unitAbbr] + 
+                    timeDiffByUnit[unitAbbr] + timeUnits[unit] + sep);
             }
         }
     }
