@@ -76,7 +76,7 @@ function countdownInit() {
 function updateTimers(countdownTimers) {
     // Create countdown timer for each element with .customcountdown class
     for (let i = 0; i < countdownTimers.length; i++) {
-        buildTimer(countdownTimers[k], k);
+        buildTimer(countdownTimers[i], i);
     }
 }
 
