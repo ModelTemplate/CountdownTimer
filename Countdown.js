@@ -1,5 +1,5 @@
 // Countdown timer that is accurate to the second and accounts for Daylight Savings Time (DST)
-
+console.log("Test");
 // All of these CSS classes must be present on page in order for countdown timer to function
 const COUNTDOWN_CLASSES = ["seedDate", "bText", "bDelayText", "years", "months", "days",
 		"hours", "minutes", "seconds", "aText", "aDelayText", "loopTime", "loopUnit",
