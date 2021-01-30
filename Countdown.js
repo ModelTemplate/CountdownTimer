@@ -129,20 +129,7 @@ function buildTimer(timerParams, num) {
 	let timeDiff2 = calculateTimeDiff(now, endDate2, dstOffset2);
 	
 	// Finds what time periods the specified date format wants
-	let unitCounts = {
-        Y: 0,
-        M: 0,
-        D: 0,
-        h: 0,
-        m: 0,
-        s: 0
-    };
-
-    let dateFormat = (timerParams.dateFormat === "") ? "YY MM DD hh mm ss" 
-        : timerParams.dateFormat;
-	for (let pos = 0; pos < dateFormat.length; pos++) {
-		unitCounts[dateFormat.charAt(pos)]++;
-    }
+	let unitCounts = extractUnitCounts(timerParmas.dateFormat);
 
     // Dictionary of time units based on the specified time periods desired, 
     // sets the time periods to account for the other time periods
@@ -157,57 +144,15 @@ function buildTimer(timerParams, num) {
 	// (i.e. for 120 minutes & "hh mm ss": years = 0; months = 0; days = 0;
 	// hours = 02; minutes = 00; seconds = 00)
     // time string will result in "000020000" thus far
-    let unitLeadingZeroes = {
-        Y: "",
-        M: "",
-        D: "",
-        h: "",
-        m: "",
-        s: ""
-    };
-    let unitLeadingZeroes2 = {
-        Y: "",
-        M: "",
-        D: "",
-        h: "",
-        m: "",
-        s: ""
-    };
-
-    for (let unit of Object.keys(unitCounts)) {
-        for (let i = 1; i < unitCounts[unit]; i++) {
-            if (timeDiffByUnit[unit] < Math.pow(10, unitCounts[unit] - i)) {
-                unitLeadingZeroes[unit] = "0" + unitLeadingZeroes[unit];
-            }
-            if (timeDiffByUnit2[unit] < Math.pow(10, unitCounts[unit] - i)) {
-                unitLeadingZeroes2[unit]= "0" + unitLeadingZeroes2[unit];
-            }
-        }
-    }
+    let unitLeadingZeroes = getLeadingZeroesPerUnit(timeDiffByUnit, unitCounts);
+    let unitLeadingZeroes2 = getLeadingZeroesPerUnit(timeDiffByUnit2, unitCounts);
 
 	// Based on the specified time periods' desired units, gives each time
 	// period in the string certain units
 	// (i.e. for 120 minutes & "hh mm ss" & "single": years = 0Y; months = 0M;
 	// days = 0D; hours = 02h; minutes = 00m; seconds = 00s)
 	// time string will result in "0Y0M0D02h00m00s" thus far
-    let timeUnits = {};
-    switch(timerParams.dateLabels) {
-        case "full":
-            for (let unit of Object.keys(TIME_UNIT_ABBR)) {
-                timeUnits[unit] = " " + unit + "s";
-            }
-            break;
-        case "single":
-            for (let unit of Object.keys(TIME_UNIT_ABBR)) {
-                timeUnits[unit] = TIME_UNIT_ABBR[unit];
-            }
-            break;
-        default:
-            for (let unit of Object.keys(TIME_UNIT_ABBR)) {
-                timeUnits[unit] = "";
-            }
-            break;
-    }
+    let timeUnits = extractDisplayUnits(timerParams.dateLabels);
 
 	// Separates each time period in the time string by the specified cd.separators
 	// (i.e. for 120 minutes & "hh mm ss" & "single" & " " or "&nbsp;": 
@@ -391,6 +336,65 @@ function calcTimeDiffByUnit(timeDiff, unitCounts) {
         timeDiffByUnit["s"] = seconds;
     }
     return timeDiffByUnit;
+}
+
+function extractUnitCounts(dateFormat) {
+    let unitCounts = {
+        Y: 0,
+        M: 0,
+        D: 0,
+        h: 0,
+        m: 0,
+        s: 0
+    };
+    if (dateFormat === "") {
+        dateFormat = "YY MM DD hh mm ss";
+    }
+    for (let pos = 0; pos < dateFormat.length; pos++) {
+        unitCounts[dateFormat.charAt(pos)]++;
+    }
+    return unitCounts;
+}
+
+function getLeadingZeroesPerUnit(timeDiffByUnit, unitCounts) {
+    let unitLeadingZeroes = {
+        Y: "",
+        M: "",
+        D: "",
+        h: "",
+        m: "",
+        s: ""
+    };
+    for (let unit of Object.keys(unitCounts)) {
+        for (let i = 1; i < unitCounts[unit]; i++) {
+            if (timeDiffByUnit[unit] < Math.pow(10, unitCounts[unit] - i)) {
+                unitLeadingZeroes[unit] = "0" + unitLeadingZeroes[unit];
+            }
+        }
+    }
+    return unitLeadingZeroes;
+}
+
+function extractDisplayUnits(dateLabels) {
+    let timeUnits = {};
+    switch(dateLabels) {
+        case "full":
+            for (let unit of Object.keys(TIME_UNIT_ABBR)) {
+                timeUnits[unit] = " " + unit + "s";
+            }
+            break;
+        case "single":
+            for (let unit of Object.keys(TIME_UNIT_ABBR)) {
+                timeUnits[unit] = TIME_UNIT_ABBR[unit];
+            }
+            break;
+        default:
+            for (let unit of Object.keys(TIME_UNIT_ABBR)) {
+                timeUnits[unit] = "";
+            }
+            break;
+    }
+    return timeUnits;
 }
 
 function updateBaroTimers(numLoops) {
