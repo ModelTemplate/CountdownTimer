@@ -39,7 +39,7 @@ Create a [Template](https://www.mediawiki.org/wiki/Help:Templates) page that tra
 
 Next, copy and paste the JavaScript code onto a page ending with ".js" within the [MediaWiki namespace](https://www.mediawiki.org/wiki/Help:Namespaces#MediaWiki) in order to have the countdown code run on all pages within the wiki.
 
-If you want to this countdown timer on FANDOM wikis, you will also need to add the name of MediaWiki page containing the script to the MediaWiki:ImportJS page. See [this](https://community.fandom.com/wiki/Help:Including_additional_CSS_and_JS) for more information.
+If you want to use this countdown timer on [FANDOM](https://en.wikipedia.org/wiki/Fandom_(website)) wikis, you will also need to add the name of MediaWiki page containing the script to the MediaWiki:ImportJS page. See [this](https://community.fandom.com/wiki/Help:Including_additional_CSS_and_JS) for more information.
 
 ## Notes
 * [FANDOM](https://en.wikipedia.org/wiki/Fandom_(website)) uses [MediaWiki](https://en.wikipedia.org/wiki/MediaWiki) 1.33.3 as of 1/29/21.
