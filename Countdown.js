@@ -222,7 +222,7 @@ function buildTimer(timerParams, num) {
             }
         }
     }
-    updateBaroTimers(numLoops);
+    updateBaroTimers(num, numLoops);
 }
 
 // Assuming that when an element with .customcountdown class is present
@@ -346,6 +346,7 @@ function calcTimeDiffByUnit(timeDiff, unitCounts) {
     return timeDiffByUnit;
 }
 
+// Finding out how many digits to display for each time unit
 function extractUnitCounts(dateFormat) {
     let unitCounts = {
         Y: 0,
@@ -356,7 +357,9 @@ function extractUnitCounts(dateFormat) {
         s: 0
     };
     if (dateFormat === "") {
-        dateFormat = "YY MM DD hh mm ss";
+        dateFormat = "YYMMDDhhmmss";
+    } else {
+        dateFormat = dateFormat.replace(/\s/g, "");   // removing whitespace
     }
     for (let pos = 0; pos < dateFormat.length; pos++) {
         unitCounts[dateFormat.charAt(pos)]++;
@@ -405,7 +408,7 @@ function extractDisplayUnits(dateLabels) {
     return timeUnits;
 }
 
-function updateBaroTimers(numLoops) {
+function updateBaroTimers(num, numLoops) {
     for (let platform of Object.keys(BARO_COUNTDOWN_CLASSES)) {
         let className = BARO_COUNTDOWN_CLASSES[platform];
         if ($("." + className).length > 0) {
