@@ -129,7 +129,7 @@ function buildTimer(timerParams, num) {
 	let timeDiff2 = calculateTimeDiff(now, endDate2, dstOffset2);
 	
 	// Finds what time periods the specified date format wants
-	let unitCounts = extractUnitCounts(timerParmas.dateFormat);
+	let unitCounts = extractUnitCounts(timerParams.dateFormat);
 
     // Dictionary of time units based on the specified time periods desired, 
     // sets the time periods to account for the other time periods
