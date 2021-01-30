@@ -164,11 +164,11 @@ function buildTimer(timerParams, num) {
 	// when loop iterations reaches loop limit, hide normal text, hide delay
 	// text, hide normal/delay time periods, and only show end of loop text
 	if ((numLoops === (loopLimit + 1)) && (endDate.getTime() <= now.getTime())) {
-		$("#endText_" + num).css("display", "visible");
-		$("#bText_" + num).css("display", "none");
-        $("#aText_" + num).css("display", "none");
-        $("#bDelayText_" + num).css("display", "none");
-		$("#aDelayText_" + num).css("display", "none");
+        document.getElementById("endText_" + num).setAttribute("style", "display:visible");
+        document.getElementById("bText_" + num).setAttribute("style", "display:none");
+        document.getElementById("aText_" + num).setAttribute("style", "display:none");
+        document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
+        document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
         for (let unit of Object.keys(timeUnits)) {
             $("#" + unit + "s_" + num).html("");
         }
@@ -176,11 +176,11 @@ function buildTimer(timerParams, num) {
     // When delay time reaches inputted delay time show delay text, hide normal
     // text, and only show delay time periods specified by date format
 	} else if ((Math.floor(timeDiff2 / ONE_SECOND) * ONE_SECOND) < delayTime) {
-        $("#endText_" + num).css("display", "none");
-        $("#bText_" + num).css("display", "none");
-        $("#aText_" + num).css("display", "none");
-        $("#bDelayText_" + num).css("display", "visible");
-        $("#aDelayText_" + num).css("display", "visible");
+        document.getElementById("endText_" + num).setAttribute("style", "display:none");
+        document.getElementById("bText_" + num).setAttribute("style", "display:none");
+        document.getElementById("aText_" + num).setAttribute("style", "display:none");
+        document.getElementById("bDelayText_" + num).setAttribute("style", "display:visible");
+        document.getElementById("aDelayText_" + num).setAttribute("style", "display:visible");
         if ($("#delayDisplay_" + num).text() === "") {
             // Finally adding the time values onto the page
             for (let unit of Object.keys(TIME_UNIT_ABBR)) {
@@ -204,11 +204,11 @@ function buildTimer(timerParams, num) {
     // minutes = 00m ; seconds = 00s)
     // Time string will result in "02h 00m 00s" thus far
     } else {
-        $("#endText_" + num).css("display", "none");
-        $("#bText_" + num).css("display", "visible");
-        $("#aText_" + num).css("display", "visible");
-        $("#bDelayText_" + num).css("display", "none");
-        $("#aDelayText_" + num).css("display", "none");
+        document.getElementById("endText_" + num).setAttribute("style", "display:none");
+        document.getElementById("bText_" + num).setAttribute("style", "display:visible");
+        document.getElementById("aText_" + num).setAttribute("style", "display:visible");
+        document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
+        document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
         for (let unit of Object.keys(TIME_UNIT_ABBR)) {
             let unitAbbr = TIME_UNIT_ABBR[unit];
             if (unitCounts[unitAbbr] !== 0) {
