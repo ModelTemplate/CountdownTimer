@@ -121,8 +121,8 @@ function buildTimer(timerParams, num) {
         numLoops = loopLimit;
     }
 	
-	// Accounts for Daylight Saving Time (DST) between now and target date 
-	// unless otherwise specified
+    // Accounts for Daylight Saving Time (DST) between now and target date 
+    // unless otherwise specified
     let dstOffset = (timerParams.dst === "") ? 
         (now.getTimezoneOffset() - endDate.getTimezoneOffset()) * 60 * 1000 : 0;
     let dstOffsetDelay = (timerParams.dst === "") ? 
@@ -389,8 +389,8 @@ function updateBaroTimers(num, numLoops) {
 }
 
 function baroRelayTracker(count, platform) {
-	let rotationNum = count % 4;
-	let planet = platformRelayDict[platform][rotationNum];
-	return relayDict[planet] + " Relay, <a href=\"https://warframe.fandom.com/wiki/" 
-			+ planet + "\">" + planet + "</a> (" + platform + ")<br/>";
+    let rotationNum = count % 4;
+    let planet = platformRelayDict[platform][rotationNum];
+    return relayDict[planet] + " Relay, <a href=\"https://warframe.fandom.com/wiki/" 
+            + planet + "\">" + planet + "</a> (" + platform + ")<br/>";
 }
