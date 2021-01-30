@@ -241,13 +241,13 @@ function buildTimer(timerParams, num) {
             for (let unit of Object.keys(TIME_UNIT_ABBR)) {
                 let unitAbbr = TIME_UNIT_ABBR[unit];
                 if (unitCounts[unitAbbr] !== 0) {
-                    $("#" + unit + "_" + num).html(unitLeadingZeroes2[unitAbbr] + 
+                    $("#" + unit.toLowerCase() + "s_" + num).html(unitLeadingZeroes2[unitAbbr] + 
                         timeDiffByUnit2[unitAbbr] + timeUnits[unit] + sep);
                 }
             }
         } else {
             for (let unit of Object.keys(timeUnits)) {
-                $("#" + unit + "s_" + num).html("");
+                $("#" + unit.toLowerCase() + "s_" + num).html("");
             }
         }
     
@@ -267,7 +267,7 @@ function buildTimer(timerParams, num) {
         for (let unit of Object.keys(TIME_UNIT_ABBR)) {
             let unitAbbr = TIME_UNIT_ABBR[unit];
             if (unitCounts[unitAbbr] !== 0) {
-                $("#" + unit + "_" + num).html(unitLeadingZeroes[unitAbbr] + 
+                $("#" + unit.toLowerCase() + "s_" + num).html(unitLeadingZeroes[unitAbbr] + 
                     timeDiffByUnit[unitAbbr] + timeUnits[unit] + sep);
             }
         }
@@ -279,7 +279,7 @@ function buildTimer(timerParams, num) {
 // all the required CSS classes for timer will also be present
 function getTimersElements() {
     let count = document.getElementsByClassName("customcountdown");
-    let countdownTimers = [];
+    countdownTimers = [];
     
 	for (let i = 0; i < count.length; i++) {
 		// Adding new objects to dictionary; each representing an individual timer
