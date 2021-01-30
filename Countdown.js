@@ -15,6 +15,7 @@ const BARO_COUNTDOWN_CLASSES = {
 };
 Object.freeze(BARO_COUNTDOWN_CLASSES);
 
+// All dictionaries related to time use the abbreviated time units as keys
 const TIME_UNIT_ABBR = {
     Year: "Y",
     Month: "M",
@@ -25,13 +26,15 @@ const TIME_UNIT_ABBR = {
 };
 Object.freeze(TIME_UNIT_ABBR);
 
-// Values are in milliseconds
-const ONE_SECOND = 1000,
-    ONE_MINUTE = 60000,
-	ONE_HOUR = 3600000,
-    ONE_DAY = ONE_HOUR * 24,
-	ONE_YEAR = ONE_DAY * 365,	// assuming leap years are irrelevant
-    ONE_MONTH = ONE_YEAR / 12;	// average milliseconds per month
+const TIME_IN_MILLISECONDS = {
+    Y: 31536000000,  // assuming leap years are irrelevant (milliseconds in a day * 365)
+    M: 2628000000,   // average milliseconds per month (milliseconds in a year / 12)
+    D: 86400000,
+    h: 3600000,
+    m: 60000,
+    s: 1000
+};
+Object.freeze(TIME_IN_MILLISECONDS);
 
 // Mapping relay names to their respective planet
 var relayDict = {
@@ -179,7 +182,7 @@ function buildTimer(timerParams, num) {
 
     // When delay time reaches inputted delay time show delay text, hide normal
     // text, and only show delay time periods specified by date format
-	} else if ((Math.floor(timeDiffDelay / ONE_SECOND) * ONE_SECOND) < delayTime) {
+	} else if ((Math.floor(timeDiffDelay / TIME_IN_MILLISECONDS.Second) * TIME_IN_MILLISECONDS.Second) < delayTime) {
         document.getElementById("endText_" + num).setAttribute("style", "display:none");
         document.getElementById("bText_" + num).setAttribute("style", "display:none");
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
@@ -260,22 +263,10 @@ function getTimersElements() {
 }
 
 function convertTimeToMilliseconds(timeValue, timeUnit) {
-    switch (timeUnit) {
-        case "Y":
-            return timeValue * ONE_YEAR;
-        case "M":
-            return timeValue * ONE_MONTH;
-        case "D":
-            return timeValue * ONE_DAY;
-        case "h":
-            return timeValue * ONE_HOUR;
-        case "m":
-            return timeValue * ONE_MINUTE;
-        case "s":
-            return timeValue * ONE_SECOND;
-        default:
-            throw "Invalid time unit: \"" + timeUnit + "\"";
+    if (TIME_IN_MILLISECONDS[timeUnit] !== undefined) {
+        return timeValue * TIME_IN_MILLISECONDS[timeUnit];
     }
+    throw "Invalid time unit: \"" + timeUnit + "\"";
 }
 
 // Determining the end datetime based on current datetime, initial datetime, 
@@ -314,34 +305,15 @@ function calcTimeDiffByUnit(timeDiff, unitCounts) {
         m: 0,
         s: 0,
     };
-    if (unitCounts["Y"] > 0) {
-        let years = Math.floor(timeDiff / ONE_YEAR);
-        timeDiffByUnit["Y"] = years;
-        timeDiff -= years * ONE_YEAR;
-    }
-    if (unitCounts["M"] > 0) {
-        let months = Math.floor(timeDiff / ONE_MONTH);
-        timeDiffByUnit["M"] = months;
-        timeDiff -= months * ONE_MONTH;
-    }
-    if (unitCounts["D"] > 0) {
-        let days = Math.floor(timeDiff / ONE_DAY);
-        timeDiffByUnit["D"] = days;
-        timeDiff -= days * ONE_DAY;
-    }
-    if (unitCounts["h"] > 0) {
-        let hours = Math.floor(timeDiff / ONE_HOUR);
-        timeDiffByUnit["h"] = hours;
-        timeDiff -= hours * ONE_HOUR;
-    }
-    if (unitCounts["m"] > 0) {
-        let minutes = Math.floor(timeDiff / ONE_MINUTE);
-        timeDiffByUnit["m"] = minutes;
-        timeDiff -= minutes * ONE_MINUTE;
-    }
-    if (unitCounts["s"] > 0) {
-        let seconds = Math.floor(timeDiff / ONE_SECOND);
-        timeDiffByUnit["s"] = seconds;
+    for (let unit of Object.keys(TIME_UNIT_ABBR)) {
+        let unitAbbr = TIME_UNIT_ABBR[unit];
+        let timeInMilliseconds = TIME_IN_MILLISECONDS[unitAbbr];
+        if (unitCounts[unitAbbr] > 0) {
+            // calculating how many of a time unit can fit in this time frame
+            let numTimeUnits = Math.floor(timeDiff / timeInMilliseconds);
+            timeDiffByUnit[unitAbbr] = numTimeUnits;
+            timeDiff -= numTimeUnits * timeInMilliseconds;
+        }
     }
     return timeDiffByUnit;
 }
