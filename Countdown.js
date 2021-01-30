@@ -57,23 +57,25 @@ if (document.getElementsByClassName("customcountdown").length > 0) {
     countdownInit();
 }
 
+var countdownTimers;
+
 function countdownInit() {
     // Stores the innerHTML of elements with the CSS class associated with the key;
     // each element contains an object representing all the countdown elements
     // for a particular timer.
-    let countdownTimers = getTimersElements();
+    countdownTimers = getTimersElements();
     console.log("Countdown timer elements recognized.");
 
-    updateTimers(countdownTimers);
+    updateTimers();
     console.log("Countdown timers started.");
 
     // Update timer every second
     setInterval(function() {
-        updateTimers(countdownTimers);
+        updateTimers();
     }, 1000);
 }
 
-function updateTimers(countdownTimers) {
+function updateTimers() {
     // Create countdown timer for each element with .customcountdown class
     for (let i = 0; i < countdownTimers.length; i++) {
         buildTimer(countdownTimers[i], i);
@@ -86,16 +88,20 @@ function buildTimer(timerParams, num) {
 	// Parameters are stored in innerHTML
     let seedDate = new Date((timerParams.seedDate === "") ? "December 3, 2015 00:00:00 UTC" 
         : timerParams.seedDate);
-    // Convert inputted loop/delay time to specified time period in milliseconds
+    
     let loopUnit = (timerParams.loopUnit === "") ? "s" 
         : timerParams.loopUnit;
+    // Time between loop iterations (i.e. duration of a loop)
     let loopTime = (isNaN(timerParams.loopTime)) ? 0 
         : convertTimeToMilliseconds(Number(timerParams.loopTime), loopUnit);
+    // Maximum number of loop iterations
     let loopLimit = (isNaN(timerParams.loopLimit)) ? 0 
         : Number(timerParams.loopLimit);
 
     let delayUnit = (timerParams.delayUnit === "") ? "s" 
         : timerParams.delayUnit;
+    // Splits total loopTime into two time periods
+    // (e.g. Cetus day/night cycle with 100 minutes day and 50 minutes night)
     let delayTime = (isNaN(timerParams.delayTime)) ? 0 
         : convertTimeToMilliseconds(Number(timerParams.delayTime), delayUnit);
 
@@ -322,15 +328,19 @@ function convertTimeToMilliseconds(timeValue, timeUnit) {
 // Determining the end datetime based on current datetime, initial datetime, 
 // loop duration, and the max number of loops that the timer will cycle through.
 // Note that initial datetime is usually before current datetime.
-function findEndDate(now, startDate, delay, loopTime, loopLimit) {
+function findEndDate(now, seedDate, delay, loopTime, loopLimit) {
+    // Infinite loop
+    if (loopLimit === -1) {
+        return new Date(now.getTime() + delay + loopTime);
+    }
 	// Calculating number of loops between current and initial datetime
 	// Math.ceil() is needed to account for the fact that timer can reach 0 
 	// during an unfinished loop
-	let numLoops = Math.ceil((now.getTime() - startDate.getTime() + delay) / loopTime);
+	let numLoops = Math.ceil((now.getTime() - seedDate.getTime() + delay) / loopTime);
 	if (numLoops > loopLimit + 1) {
 		numLoops = loopLimit + 1;
-	}
-    return new Date(startDate.getTime() + delay + (numLoops * loopTime));
+    }
+    return new Date(seedDate.getTime() + delay + (numLoops * loopTime));
 }
 
 // Total time between now and target date in milliseconds converted
