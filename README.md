@@ -7,7 +7,7 @@ For use on the [WARFRAME](https://warframe.fandom.com/wiki/WARFRAME_Wiki) wiki. 
 Open Countdown.html with your preferred HTML5 compliant browser and enable JavaScript.
 
 ## Notes
-* FANDOM uses MediaWiki 1.33.3 as of 1.29.21
+* [FANDOM](https://en.wikipedia.org/wiki/Fandom_(website)) uses [MediaWiki](https://en.wikipedia.org/wiki/MediaWiki) 1.33.3 as of 1/29/21.
 * Its [ResourceLoader](https://www.mediawiki.org/wiki/ResourceLoader) supports [ES3](https://www-archive.mozilla.org/js/language/E262-3.pdf) syntax and modern features of JavaScript such as Sets, Maps, Promises, and etc.
 * There is **no** support for classes, arrow functions, inline getters, and etc.
 
