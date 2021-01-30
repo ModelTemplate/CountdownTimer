@@ -117,8 +117,8 @@ function buildTimer(timerParams, num) {
 	let endDateDelay = findEndDate(now, seedDate, delayTime, loopTime, loopLimit);
 
 	let numLoops = Math.ceil((now.getTime() - seedDate.getTime()) / loopTime);
-	if (numLoops > loopLimit + 1) {
-		numLoops = loopLimit + 1;
+	if (numLoops > loopLimit) {
+		numLoops = loopLimit;
 	}
 	
 	// Accounts for Daylight Saving Time (DST) between now and target date 
