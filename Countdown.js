@@ -173,8 +173,8 @@ function buildTimer(timerParams, num) {
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
         document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
-        for (let unit of Object.keys(timeUnits)) {
-            $("#" + unit + "s_" + num).html("");
+        for (let unit of Object.keys(TIME_UNIT_ABBR)) {
+            $("#" + unit.toLowerCase() + "s_" + num).html("");
         }
 
     // When delay time reaches inputted delay time show delay text, hide normal
@@ -195,7 +195,7 @@ function buildTimer(timerParams, num) {
                 }
             }
         } else {
-            for (let unit of Object.keys(timeUnits)) {
+            for (let unit of Object.keys(TIME_UNIT_ABBR)) {
                 $("#" + unit.toLowerCase() + "s_" + num).html("");
             }
         }
