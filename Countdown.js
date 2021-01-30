@@ -106,7 +106,7 @@ function buildTimer(timerParams, num) {
         : convertTimeToMilliseconds(Number(timerParams.delayTime), delayUnit);
 
 	let endDate = findEndDate(now, seedDate, 0, loopTime, loopLimit);
-	let endDate2 = findEndDate(now, seedDate, delayTime, loopTime, loopLimit);
+	let endDateDelay = findEndDate(now, seedDate, delayTime, loopTime, loopLimit);
 
 	let numLoops = Math.ceil((now.getTime() - seedDate.getTime()) / loopTime);
 	if (numLoops > loopLimit + 1) {
@@ -117,8 +117,8 @@ function buildTimer(timerParams, num) {
 	// unless otherwise specified
     let dstOffset = (timerParams.dst === "") ? 
         (now.getTimezoneOffset() - endDate.getTimezoneOffset()) * 60 * 1000 : 0;
-    let dstOffset2 = (timerParams.dst === "") ? 
-        (now.getTimezoneOffset() - endDate2.getTimezoneOffset()) * 60 * 1000 : 0;
+    let dstOffsetDelay = (timerParams.dst === "") ? 
+        (now.getTimezoneOffset() - endDateDelay.getTimezoneOffset()) * 60 * 1000 : 0;
     
     // Total time between now and target date in milliseconds converted
     // to certain time period
@@ -126,7 +126,7 @@ function buildTimer(timerParams, num) {
     // hours = 2; minutes = 120; seconds = 7200)
     // time string will result in "00021207200" thus far
 	let timeDiff = calculateTimeDiff(now, endDate, dstOffset);  // in milliseconds
-	let timeDiff2 = calculateTimeDiff(now, endDate2, dstOffset2);
+	let timeDiffDelay = calculateTimeDiff(now, endDateDelay, dstOffsetDelay);
 	
 	// Finds what time periods the specified date format wants
 	let unitCounts = extractUnitCounts(timerParams.dateFormat);
@@ -137,7 +137,7 @@ function buildTimer(timerParams, num) {
     // hours = 2; minutes = 0; seconds = 0)
     // time string will result in "000200" thus far
     let timeDiffByUnit = calcTimeDiffByUnit(timeDiff, unitCounts);
-    let timeDiffByUnit2 = calcTimeDiffByUnit(timeDiff2, unitCounts);
+    let timeDiffByUnitDelay = calcTimeDiffByUnit(timeDiffDelay, unitCounts);
 	
 	// Based on the specified time periods' desired format, gives time string
 	// leading zeroes
@@ -145,7 +145,7 @@ function buildTimer(timerParams, num) {
 	// hours = 02; minutes = 00; seconds = 00)
     // time string will result in "000020000" thus far
     let unitLeadingZeroes = getLeadingZeroesPerUnit(timeDiffByUnit, unitCounts);
-    let unitLeadingZeroes2 = getLeadingZeroesPerUnit(timeDiffByUnit2, unitCounts);
+    let unitLeadingZeroesDelay = getLeadingZeroesPerUnit(timeDiffByUnitDelay, unitCounts);
 
 	// Based on the specified time periods' desired units, gives each time
 	// period in the string certain units
@@ -175,7 +175,7 @@ function buildTimer(timerParams, num) {
 
     // When delay time reaches inputted delay time show delay text, hide normal
     // text, and only show delay time periods specified by date format
-	} else if ((Math.floor(timeDiff2 / ONE_SECOND) * ONE_SECOND) < delayTime) {
+	} else if ((Math.floor(timeDiffDelay / ONE_SECOND) * ONE_SECOND) < delayTime) {
         document.getElementById("endText_" + num).setAttribute("style", "display:none");
         document.getElementById("bText_" + num).setAttribute("style", "display:none");
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
@@ -186,8 +186,8 @@ function buildTimer(timerParams, num) {
             for (let unit of Object.keys(TIME_UNIT_ABBR)) {
                 let unitAbbr = TIME_UNIT_ABBR[unit];
                 if (unitCounts[unitAbbr] !== 0) {
-                    $("#" + unit.toLowerCase() + "s_" + num).html(unitLeadingZeroes2[unitAbbr] + 
-                        timeDiffByUnit2[unitAbbr] + timeUnits[unit] + sep);
+                    $("#" + unit.toLowerCase() + "s_" + num).html(unitLeadingZeroesDelay[unitAbbr] + 
+                        timeDiffByUnitDelay[unitAbbr] + timeUnits[unit] + sep);
                 }
             }
         } else {
