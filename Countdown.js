@@ -100,10 +100,14 @@ function buildTimer(timerParams, num) {
 
     let delayUnit = (timerParams.delayUnit === "") ? "s" 
         : timerParams.delayUnit;
-    // Splits total loopTime into two time periods
-    // (e.g. Cetus day/night cycle with 100 minutes day and 50 minutes night)
+    // Splits total loopTime into two time periods, one that is the delayed countdown and
+    // the other is the actual countdown
+    // (e.g. Cetus day/night cycle with 100 minutes day and 50 minutes night or
+    // Baro's countdown until arrival and until departure)
     let delayTime = (isNaN(timerParams.delayTime)) ? 0 
         : convertTimeToMilliseconds(Number(timerParams.delayTime), delayUnit);
+    // Show delayed countdown if true
+    let delayDisplay = timerParams.delayDisplay === "";
 
 	let endDate = findEndDate(now, seedDate, 0, loopTime, loopLimit);
 	let endDateDelay = findEndDate(now, seedDate, delayTime, loopTime, loopLimit);
@@ -181,8 +185,8 @@ function buildTimer(timerParams, num) {
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
         document.getElementById("bDelayText_" + num).setAttribute("style", "display:visible");
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:visible");
-        if ($("#delayDisplay_" + num).text() === "") {
-            // Finally adding the time values onto the page
+        if (delayDisplay) {
+            // Adding the time values onto the page for delayed time period
             for (let unit of Object.keys(TIME_UNIT_ABBR)) {
                 let unitAbbr = TIME_UNIT_ABBR[unit];
                 if (unitCounts[unitAbbr] !== 0) {
@@ -209,6 +213,7 @@ function buildTimer(timerParams, num) {
         document.getElementById("aText_" + num).setAttribute("style", "display:visible");
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
         document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
+        // Adding the time values onto the page for "true" countdown
         for (let unit of Object.keys(TIME_UNIT_ABBR)) {
             let unitAbbr = TIME_UNIT_ABBR[unit];
             if (unitCounts[unitAbbr] !== 0) {
