@@ -7,7 +7,7 @@ For use on the [WARFRAME](https://warframe.fandom.com/wiki/WARFRAME_Wiki) wiki. 
 Open Countdown.html with your preferred HTML5 compliant browser and enable JavaScript.
 
 ## How to use on MediaWiki wikis
-Create a [Template](https://www.mediawiki.org/wiki/Help:Templates) page that transcludes all the required elements to start a countdown timer.
+Create a [Template](https://www.mediawiki.org/wiki/Help:Templates) page that transcludes all the required elements to start a countdown timer. For example:
 
     <span class="customcountdown" style="font-size: 18px;">
         <span style="display:none" class="seedDate">January 30, 2021 22:35:00 UTC</span>
