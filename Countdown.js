@@ -172,7 +172,7 @@ function buildTimer(timerParams, num) {
 
 	// when loop iterations reaches loop limit, hide normal text, hide delay
 	// text, hide normal/delay time periods, and only show end of loop text
-	if ((numLoops === (loopLimit + 1)) && (endDate.getTime() <= now.getTime())) {
+	if ((numLoops === loopLimit) && (endDate.getTime() <= now.getTime())) {
         document.getElementById("endText_" + num).setAttribute("style", "display:visible");
         document.getElementById("bText_" + num).setAttribute("style", "display:none");
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
