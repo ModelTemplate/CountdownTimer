@@ -55,12 +55,12 @@ var platformRelayDict = {
 	NSW: ["Europa", "Eris", "Mercury", "Venus"]
 };
 
+var countdownTimers;
+
 // Assume that this code is only invoked by Template:Countdown
 if (document.getElementsByClassName("customcountdown").length > 0) {
     countdownInit();
 }
-
-var countdownTimers;
 
 function countdownInit() {
     // Stores the innerHTML of elements with the CSS class associated with the key;
@@ -85,6 +85,7 @@ function updateTimers() {
     }
 }
 
+// Calculate time difference and rebuild timer each second
 function buildTimer(timerParams, num) {
 	let now = new Date();
 
@@ -112,7 +113,7 @@ function buildTimer(timerParams, num) {
     // Show delayed countdown if true
     let delayDisplay = timerParams.delayDisplay === "";
 
-	let endDate = findEndDate(now, seedDate, 0, loopTime, loopLimit);
+    let endDate = findEndDate(now, seedDate, 0, loopTime, loopLimit);
 	let endDateDelay = findEndDate(now, seedDate, delayTime, loopTime, loopLimit);
 
 	let numLoops = Math.ceil((now.getTime() - seedDate.getTime()) / loopTime);
@@ -132,7 +133,8 @@ function buildTimer(timerParams, num) {
     // (i.e. for 120 minutes: years = 0; months = 0; days = 0;
     // hours = 2; minutes = 120; seconds = 7200)
     // time string will result in "00021207200" thus far
-	let timeDiff = calculateTimeDiff(now, endDate, dstOffset);  // in milliseconds
+    let timeDiff = calculateTimeDiff(now, endDate, dstOffset);  // in milliseconds
+    console.log(timeDiff);
 	let timeDiffDelay = calculateTimeDiff(now, endDateDelay, dstOffsetDelay);
 	
 	// Finds what time periods the specified date format wants
@@ -182,7 +184,7 @@ function buildTimer(timerParams, num) {
 
     // When delay time reaches inputted delay time show delay text, hide normal
     // text, and only show delay time periods specified by date format
-	} else if ((Math.floor(timeDiffDelay / TIME_IN_MILLISECONDS.Second) * TIME_IN_MILLISECONDS.Second) < delayTime) {
+	} else if ((Math.floor(timeDiffDelay / TIME_IN_MILLISECONDS["s"]) * TIME_IN_MILLISECONDS["s"]) < delayTime) {
         document.getElementById("endText_" + num).setAttribute("style", "display:none");
         document.getElementById("bText_" + num).setAttribute("style", "display:none");
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
@@ -328,11 +330,9 @@ function extractUnitCounts(dateFormat) {
         m: 0,
         s: 0
     };
-    if (dateFormat === "") {
-        dateFormat = "YYMMDDhhmmss";
-    } else {
-        dateFormat = dateFormat.replace(/\s/g, "");   // removing whitespace
-    }
+    dateFormat = (dateFormat === "") ? "YYMMDDhhmmss" 
+        : dateFormat.replace(/\s/g, "");   // removing whitespace
+    
     for (let pos = 0; pos < dateFormat.length; pos++) {
         unitCounts[dateFormat.charAt(pos)]++;
     }
