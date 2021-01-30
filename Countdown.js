@@ -98,8 +98,10 @@ function buildTimer(timerParams, num) {
     // Time between loop iterations (i.e. duration of a loop)
     let loopTime = (isNaN(timerParams.loopTime)) ? 0 
         : convertTimeToMilliseconds(Number(timerParams.loopTime), loopUnit);
-    // Maximum number of loop iterations
-    let loopLimit = (isNaN(timerParams.loopLimit)) ? 0 
+    // Maximum number of loop iterations; it loopLimit is less than 0, then effectively 
+    // treat it as infinite number of loops
+    let loopLimit = (isNaN(timerParams.loopLimit)) ? 0 : 
+        (timerParams.loopLimit < 0) ? Number.MAX_SAFE_INTEGER 
         : Number(timerParams.loopLimit);
 
     let delayUnit = (timerParams.delayUnit === "") ? "s" 
@@ -274,10 +276,6 @@ function convertTimeToMilliseconds(timeValue, timeUnit) {
 // loop duration, and the max number of loops that the timer will cycle through.
 // Note that initial datetime is usually before current datetime.
 function findEndDate(now, seedDate, delay, loopTime, loopLimit) {
-    // Effectively an infinite loop
-    if (loopLimit === -1) {
-        loopLimit = Number.MAX_SAFE_INTEGER;
-    }
     // Calculating number of loops between current and initial datetime
     // Math.ceil() is needed to account for the fact that timer can reach 0 
     // during an unfinished loop
