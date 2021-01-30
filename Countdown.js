@@ -283,8 +283,8 @@ function findEndDate(now, seedDate, delay, loopTime, loopLimit) {
 	// Math.ceil() is needed to account for the fact that timer can reach 0 
 	// during an unfinished loop
 	let numLoops = Math.ceil((now.getTime() - seedDate.getTime() + delay) / loopTime);
-	if (numLoops > loopLimit + 1) {
-		numLoops = loopLimit + 1;
+	if (numLoops > loopLimit) {
+		numLoops = loopLimit;
     }
     return new Date(seedDate.getTime() + delay + (numLoops * loopTime));
 }
