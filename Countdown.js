@@ -134,7 +134,6 @@ function buildTimer(timerParams, num) {
     // hours = 2; minutes = 120; seconds = 7200)
     // time string will result in "00021207200" thus far
     let timeDiff = calculateTimeDiff(now, endDate, dstOffset);  // in milliseconds
-    console.log(timeDiff);
 	let timeDiffDelay = calculateTimeDiff(now, endDateDelay, dstOffsetDelay);
 	
 	// Finds what time periods the specified date format wants
@@ -268,7 +267,7 @@ function convertTimeToMilliseconds(timeValue, timeUnit) {
     if (TIME_IN_MILLISECONDS[timeUnit] !== undefined) {
         return timeValue * TIME_IN_MILLISECONDS[timeUnit];
     }
-    throw "Invalid time unit: \"" + timeUnit + "\"";
+    throw "ERROR: Invalid time unit under an element with .loopLimit class: \"" + timeUnit + "\"";
 }
 
 // Determining the end datetime based on current datetime, initial datetime, 
