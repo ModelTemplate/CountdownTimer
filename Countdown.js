@@ -274,9 +274,9 @@ function convertTimeToMilliseconds(timeValue, timeUnit) {
 // loop duration, and the max number of loops that the timer will cycle through.
 // Note that initial datetime is usually before current datetime.
 function findEndDate(now, seedDate, delay, loopTime, loopLimit) {
-    // Infinite loop
+    // Effectively an infinite loop
     if (loopLimit === -1) {
-        return new Date(now.getTime() + delay + loopTime);
+        loopLimit = Number.MAX_SAFE_INTEGER;
     }
     // Calculating number of loops between current and initial datetime
     // Math.ceil() is needed to account for the fact that timer can reach 0 
