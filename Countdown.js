@@ -2,9 +2,9 @@
 
 // All of these CSS classes must be present on page in order for countdown timer to function
 const COUNTDOWN_CLASSES = ["seedDate", "bText", "bDelayText", "years", "months", "days",
-		"hours", "minutes", "seconds", "aText", "aDelayText", "loopTime", "loopUnit",
-		"loopLimit", "endText", "delayTime", "delayUnit", "delayDisplay", "dst",
-		"dateFormat", "dateLabels", "separators"];
+        "hours", "minutes", "seconds", "aText", "aDelayText", "loopTime", "loopUnit",
+        "loopLimit", "endText", "delayTime", "delayUnit", "delayDisplay", "dst",
+        "dateFormat", "dateLabels", "separators"];
 Object.freeze(COUNTDOWN_CLASSES);
 
 const BARO_COUNTDOWN_CLASSES = {
@@ -38,21 +38,21 @@ Object.freeze(TIME_IN_MILLISECONDS);
 
 // Mapping relay names to their respective planet
 var relayDict = {
-	Mercury: "Larunda",
-	Venus: "Vesper",
-	Earth: "Strata",
-	Saturn: "Kronia",
-	Pluto: "Orcus",
-	Europa: "Leonov",
-	Eris: "Kuiper"
+    Mercury: "Larunda",
+    Venus: "Vesper",
+    Earth: "Strata",
+    Saturn: "Kronia",
+    Pluto: "Orcus",
+    Europa: "Leonov",
+    Eris: "Kuiper"
 };
 
 // Planets are in order of Baro Ki'Teer's rotation
 var platformRelayDict = {
-	PC: ["Earth", "Pluto", "Saturn", "Mercury"],
-	PS4: ["Earth", "Eris", "Mercury", "Saturn"],
-	XB1: ["Venus", "Pluto", "Europa", "Earth"],
-	NSW: ["Europa", "Eris", "Mercury", "Venus"]
+    PC: ["Earth", "Pluto", "Saturn", "Mercury"],
+    PS4: ["Earth", "Eris", "Mercury", "Saturn"],
+    XB1: ["Venus", "Pluto", "Europa", "Earth"],
+    NSW: ["Europa", "Eris", "Mercury", "Venus"]
 };
 
 var countdownTimers;
@@ -87,12 +87,12 @@ function updateTimers() {
 
 // Calculate time difference and rebuild timer each second
 function buildTimer(timerParams, num) {
-	let now = new Date();
+    let now = new Date();
 
-	// Parameters are stored in innerHTML
+    // Parameters are stored in innerHTML
     let seedDate = new Date((timerParams.seedDate === "") ? "December 3, 2015 00:00:00 UTC" 
         : timerParams.seedDate);
-    
+
     let loopUnit = (timerParams.loopUnit === "") ? "s" 
         : timerParams.loopUnit;
     // Time between loop iterations (i.e. duration of a loop)
@@ -114,12 +114,12 @@ function buildTimer(timerParams, num) {
     let delayDisplay = timerParams.delayDisplay === "";
 
     let endDate = findEndDate(now, seedDate, 0, loopTime, loopLimit);
-	let endDateDelay = findEndDate(now, seedDate, delayTime, loopTime, loopLimit);
+    let endDateDelay = findEndDate(now, seedDate, delayTime, loopTime, loopLimit);
 
-	let numLoops = Math.ceil((now.getTime() - seedDate.getTime()) / loopTime);
-	if (numLoops > loopLimit) {
-		numLoops = loopLimit;
-	}
+    let numLoops = Math.ceil((now.getTime() - seedDate.getTime()) / loopTime);
+    if (numLoops > loopLimit) {
+        numLoops = loopLimit;
+    }
 	
 	// Accounts for Daylight Saving Time (DST) between now and target date 
 	// unless otherwise specified
@@ -134,10 +134,10 @@ function buildTimer(timerParams, num) {
     // hours = 2; minutes = 120; seconds = 7200)
     // time string will result in "00021207200" thus far
     let timeDiff = calculateTimeDiff(now, endDate, dstOffset);  // in milliseconds
-	let timeDiffDelay = calculateTimeDiff(now, endDateDelay, dstOffsetDelay);
+    let timeDiffDelay = calculateTimeDiff(now, endDateDelay, dstOffsetDelay);
 	
-	// Finds what time periods the specified date format wants
-	let unitCounts = extractUnitCounts(timerParams.dateFormat);
+    // Finds what time periods the specified date format wants
+    let unitCounts = extractUnitCounts(timerParams.dateFormat);
 
     // Dictionary of time units based on the specified time periods desired, 
     // sets the time periods to account for the other time periods
@@ -147,31 +147,31 @@ function buildTimer(timerParams, num) {
     let timeDiffByUnit = calcTimeDiffByUnit(timeDiff, unitCounts);
     let timeDiffByUnitDelay = calcTimeDiffByUnit(timeDiffDelay, unitCounts);
 	
-	// Based on the specified time periods' desired format, gives time string
-	// leading zeroes
-	// (i.e. for 120 minutes & "hh mm ss": years = 0; months = 0; days = 0;
-	// hours = 02; minutes = 00; seconds = 00)
+    // Based on the specified time periods' desired format, gives time string
+    // leading zeroes
+    // (i.e. for 120 minutes & "hh mm ss": years = 0; months = 0; days = 0;
+    // hours = 02; minutes = 00; seconds = 00)
     // time string will result in "000020000" thus far
     let unitLeadingZeroes = getLeadingZeroesPerUnit(timeDiffByUnit, unitCounts);
     let unitLeadingZeroesDelay = getLeadingZeroesPerUnit(timeDiffByUnitDelay, unitCounts);
 
-	// Based on the specified time periods' desired units, gives each time
-	// period in the string certain units
-	// (i.e. for 120 minutes & "hh mm ss" & "single": years = 0Y; months = 0M;
-	// days = 0D; hours = 02h; minutes = 00m; seconds = 00s)
-	// time string will result in "0Y0M0D02h00m00s" thus far
+    // Based on the specified time periods' desired units, gives each time
+    // period in the string certain units
+    // (i.e. for 120 minutes & "hh mm ss" & "single": years = 0Y; months = 0M;
+    // days = 0D; hours = 02h; minutes = 00m; seconds = 00s)
+    // time string will result in "0Y0M0D02h00m00s" thus far
     let timeUnits = extractDisplayUnits(timerParams.dateLabels);
 
-	// Separates each time period in the time string by the specified cd.separators
-	// (i.e. for 120 minutes & "hh mm ss" & "single" & " " or "&nbsp;": 
-	// years = 0Y ; months = 0M ; days = 0D ; hours = 02h ;
-	// minutes = 00m ; seconds = 00s)
-	// time string will result in "0Y 0M 0D 02h 00m 00s" thus far
-	let sep = timerParams.separators;
+    // Separates each time period in the time string by the specified cd.separators
+    // (i.e. for 120 minutes & "hh mm ss" & "single" & " " or "&nbsp;": 
+    // years = 0Y ; months = 0M ; days = 0D ; hours = 02h ;
+    // minutes = 00m ; seconds = 00s)
+    // time string will result in "0Y 0M 0D 02h 00m 00s" thus far
+    let sep = timerParams.separators;
 
-	// when loop iterations reaches loop limit, hide normal text, hide delay
-	// text, hide normal/delay time periods, and only show end of loop text
-	if ((numLoops === loopLimit) && (endDate.getTime() <= now.getTime())) {
+    // when loop iterations reaches loop limit, hide normal text, hide delay
+    // text, hide normal/delay time periods, and only show end of loop text
+    if ((numLoops === loopLimit) && (endDate.getTime() <= now.getTime())) {
         document.getElementById("endText_" + num).setAttribute("style", "display:visible");
         document.getElementById("bText_" + num).setAttribute("style", "display:none");
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
@@ -183,7 +183,7 @@ function buildTimer(timerParams, num) {
 
     // When delay time reaches inputted delay time show delay text, hide normal
     // text, and only show delay time periods specified by date format
-	} else if ((Math.floor(timeDiffDelay / TIME_IN_MILLISECONDS["s"]) * TIME_IN_MILLISECONDS["s"]) < delayTime) {
+    } else if ((Math.floor(timeDiffDelay / TIME_IN_MILLISECONDS["s"]) * TIME_IN_MILLISECONDS["s"]) < delayTime) {
         document.getElementById("endText_" + num).setAttribute("style", "display:none");
         document.getElementById("bText_" + num).setAttribute("style", "display:none");
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
@@ -231,34 +231,34 @@ function buildTimer(timerParams, num) {
 
 // Assuming that when an element with .customcountdown class is present
 // all the required elements for timer will be nested under it
-function getTimersElements() {
+    function getTimersElements() {
     let count = document.getElementsByClassName("customcountdown");
     countdownTimers = [];
-    
-	for (let i = 0; i < count.length; i++) {
-		// Adding new objects to dictionary; each representing an individual timer
-		countdownTimers[i] = {};
-		for (let className of COUNTDOWN_CLASSES) {
+
+    for (let i = 0; i < count.length; i++) {
+        // Adding new objects to dictionary; each representing an individual timer
+        countdownTimers[i] = {};
+        for (let className of COUNTDOWN_CLASSES) {
             let element = document.getElementsByClassName(className)[i];
             if (element === null) {
                 throw className + " CSS class is missing for countdown timer #" + i;
             }
             // Gives each instance of repeating elements of same class unique ids
             // (e.g. #seedDate_1)
-			element.id = className + "_" + i;
-			countdownTimers[i][className] = element.innerHTML;
-		}
-	}
+            element.id = className + "_" + i;
+            countdownTimers[i][className] = element.innerHTML;
+        }
+    }
 	
-	// Other optional classes related to countdown
-	for (let platform of Object.keys(BARO_COUNTDOWN_CLASSES)) {
+    // Other optional classes related to countdown
+    for (let platform of Object.keys(BARO_COUNTDOWN_CLASSES)) {
         let className = BARO_COUNTDOWN_CLASSES[platform];
-		if ($("." + className).length > 0) {
-			let elements = document.getElementsByClassName(className);
-			for (let i = 0; i < elements.length; i++) {
-				elements[i].id = className + "_" + i;
-			}
-		}
+        if ($("." + className).length > 0) {
+            let elements = document.getElementsByClassName(className);
+            for (let i = 0; i < elements.length; i++) {
+                elements[i].id = className + "_" + i;
+            }
+        }
     }
     return countdownTimers;
 }
@@ -278,12 +278,12 @@ function findEndDate(now, seedDate, delay, loopTime, loopLimit) {
     if (loopLimit === -1) {
         return new Date(now.getTime() + delay + loopTime);
     }
-	// Calculating number of loops between current and initial datetime
-	// Math.ceil() is needed to account for the fact that timer can reach 0 
-	// during an unfinished loop
-	let numLoops = Math.ceil((now.getTime() - seedDate.getTime() + delay) / loopTime);
-	if (numLoops > loopLimit) {
-		numLoops = loopLimit;
+    // Calculating number of loops between current and initial datetime
+    // Math.ceil() is needed to account for the fact that timer can reach 0 
+    // during an unfinished loop
+    let numLoops = Math.ceil((now.getTime() - seedDate.getTime() + delay) / loopTime);
+    if (numLoops > loopLimit) {
+        numLoops = loopLimit;
     }
     return new Date(seedDate.getTime() + delay + (numLoops * loopTime));
 }
@@ -291,7 +291,7 @@ function findEndDate(now, seedDate, delay, loopTime, loopLimit) {
 // Total time between now and target date in milliseconds converted
 // to certain time period
 function calculateTimeDiff(now, endDate, dstOffset) {
-	return (endDate.getTime() - now.getTime()) + dstOffset;
+    return (endDate.getTime() - now.getTime()) + dstOffset;
 }
 
 // Based on the specified time periods desired, sets the time periods to
