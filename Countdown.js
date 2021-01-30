@@ -221,7 +221,7 @@ function buildTimer(timerParams, num) {
 }
 
 // Assuming that when an element with .customcountdown class is present
-// all the required CSS classes for timer will also be present
+// all the required elements for timer will be nested under it
 function getTimersElements() {
     let count = document.getElementsByClassName("customcountdown");
     countdownTimers = [];
@@ -231,6 +231,9 @@ function getTimersElements() {
 		countdownTimers[i] = {};
 		for (let className of COUNTDOWN_CLASSES) {
             let element = document.getElementsByClassName(className)[i];
+            if (element === null) {
+                throw className + " CSS class is missing for countdown timer #" + i;
+            }
             // Gives each instance of repeating elements of same class unique ids
             // (e.g. #seedDate_1)
 			element.id = className + "_" + i;
