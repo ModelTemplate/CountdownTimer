@@ -116,13 +116,11 @@ function buildTimer(timerParams, num) {
     // Show delayed countdown if true
     let delayDisplay = timerParams.delayDisplay === "";
 
-    let endDate = findEndDate(now, seedDate, 0, loopTime, loopLimit);
-    let endDateDelay = findEndDate(now, seedDate, delayTime, loopTime, loopLimit);
+    let numLoops = calculateNumLoops(now, seedDate, 0, loopTime, loopLimit);
+    let numLoopsDelay = calculateNumLoops(now, seedDate, delayTime, loopTime, loopLimit);
 
-    let numLoops = Math.ceil((now.getTime() - seedDate.getTime()) / loopTime);
-    if (numLoops > loopLimit) {
-        numLoops = loopLimit;
-    }
+    let endDate = findEndDate(seedDate, 0, numLoops, loopTime);
+    let endDateDelay = findEndDate(now, seedDate, numLoopsDelay, loopTime);
 	
     // Accounts for Daylight Saving Time (DST) between now and target date 
     // unless otherwise specified
@@ -279,18 +277,22 @@ function convertTimeToMilliseconds(timeValue, timeUnit) {
     throw "ERROR: Invalid time unit under an element with .loopLimit class: \"" + timeUnit + "\"";
 }
 
-// Determining the end datetime based on current datetime, initial datetime, 
-// loop duration, and the max number of loops that the timer will cycle through.
-// Note that initial datetime is usually before current datetime.
-function findEndDate(now, seedDate, delay, loopTime, loopLimit) {
+function calculateNumLoops(now, seedDate, delayTime, loopTime, loopLimit) {
     // Calculating number of loops between current and initial datetime
     // Math.ceil() is needed to account for the fact that timer can reach 0 
     // during an unfinished loop
-    let numLoops = Math.ceil((now.getTime() - seedDate.getTime() + delay) / loopTime);
+    let numLoops = Math.ceil((now.getTime() - seedDate.getTime() + delayTime) / loopTime);
     if (numLoops > loopLimit) {
         numLoops = loopLimit;
     }
-    return new Date(seedDate.getTime() + delay + (numLoops * loopTime));
+    return numLoops;
+}
+
+// Determining the end datetime based on current datetime, initial datetime, 
+// loop duration, and the max number of loops that the timer will cycle through.
+// Note that initial datetime is usually before current datetime.
+function findEndDate(seedDate, delayTime, numLoops, loopTime) {
+    return new Date(seedDate.getTime() + delayTime + (numLoops * loopTime));
 }
 
 // Total time between now and target date in milliseconds converted
