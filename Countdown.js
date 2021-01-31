@@ -107,8 +107,8 @@ function buildTimer(timerParams, num) {
 
     let delayUnit = (timerParams.delayUnit === "") ? "s" 
         : timerParams.delayUnit;
-    // Splits total loopTime into two time periods, one that is the delayed countdown and
-    // the other is the actual countdown
+    // Splits total loopTime into two time periods, one that is the delayed countdown (i.e.
+    // a countdown of the countdown) and the other is the actual countdown
     // (e.g. Cetus day/night cycle with 100 minutes day and 50 minutes night or
     // Baro's countdown until arrival and until departure)
     let delayTime = (isNaN(timerParams.delayTime)) ? 0 
