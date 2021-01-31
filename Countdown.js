@@ -171,7 +171,7 @@ function buildTimer(timerParams, num) {
     // time string will result in "0Y 0M 0D 02h 00m 00s" thus far
     let sep = timerParams.separators;
 
-    // when loop iterations reaches loop limit, hide normal text, hide delay
+    // When loop iterations reaches loop limit, hide normal text, hide delay
     // text, hide normal/delay time periods, and only show end of loop text
     if ((numLoops === loopLimit) && (endDate.getTime() <= now.getTime())) {
         document.getElementById("endText_" + num).setAttribute("style", "display:visible");
@@ -196,8 +196,11 @@ function buildTimer(timerParams, num) {
             for (let unit of Object.keys(TIME_UNIT_ABBR)) {
                 let unitAbbr = TIME_UNIT_ABBR[unit];
                 if (unitCounts[unitAbbr] !== 0) {
-                    $("#" + unit.toLowerCase() + "s_" + num).html(unitLeadingZeroesDelay[unitAbbr] + 
-                        timeDiffByUnitDelay[unitAbbr] + timeUnits[unit] + sep);
+                    let text = unitLeadingZeroesDelay[unitAbbr] + timeDiffByUnitDelay[unitAbbr] + timeUnits[unit];
+                    if (unitAbbr !== "s") {
+                        text += sep;
+                    }
+                    $("#" + unit.toLowerCase() + "s_" + num).html(text);
                 }
             }
         } else {
@@ -223,8 +226,11 @@ function buildTimer(timerParams, num) {
         for (let unit of Object.keys(TIME_UNIT_ABBR)) {
             let unitAbbr = TIME_UNIT_ABBR[unit];
             if (unitCounts[unitAbbr] !== 0) {
-                $("#" + unit.toLowerCase() + "s_" + num).html(unitLeadingZeroes[unitAbbr] + 
-                    timeDiffByUnit[unitAbbr] + timeUnits[unit] + sep);
+                let text = unitLeadingZeroes[unitAbbr] + timeDiffByUnit[unitAbbr] + timeUnits[unit];
+                if (unitAbbr !== "s") {
+                    text += sep;
+                }
+                $("#" + unit.toLowerCase() + "s_" + num).html(text);
             }
         }
     }
