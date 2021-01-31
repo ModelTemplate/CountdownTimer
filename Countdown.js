@@ -277,8 +277,9 @@ function convertTimeToMilliseconds(timeValue, timeUnit) {
     throw "ERROR: Invalid time unit under an element with .loopLimit class: \"" + timeUnit + "\"";
 }
 
+// Calculating number of loops between current and initial datetime
+// Note that initial datetime is usually before current datetime.
 function calculateNumLoops(now, seedDate, delayTime, loopTime, loopLimit) {
-    // Calculating number of loops between current and initial datetime
     // Math.ceil() is needed to account for the fact that timer can reach 0 
     // during an unfinished loop
     let numLoops = Math.ceil((now.getTime() - seedDate.getTime() + delayTime) / loopTime);
@@ -288,9 +289,8 @@ function calculateNumLoops(now, seedDate, delayTime, loopTime, loopLimit) {
     return numLoops;
 }
 
-// Determining the end datetime based on current datetime, initial datetime, 
-// loop duration, and the max number of loops that the timer will cycle through.
-// Note that initial datetime is usually before current datetime.
+// Determining the end datetime based on initial datetime, 
+// loop duration, and the number of loops that the timer will cycle through.
 function findEndDate(seedDate, delayTime, numLoops, loopTime) {
     return new Date(seedDate.getTime() + delayTime + (numLoops * loopTime));
 }
