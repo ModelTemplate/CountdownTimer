@@ -109,12 +109,17 @@ function buildTimer(timerParams, num) {
         : timerParams.delayUnit;
     // Splits total loopTime into two time periods, one that is the delayed countdown (i.e.
     // a countdown of the countdown) and the other is the actual countdown
-    // (e.g. Cetus day/night cycle with 100 minutes day and 50 minutes night or
-    // Baro's countdown until arrival and until departure)
+    // (e.g. if delayTime == 20s and loopTime = 60s, the first 20s will be a 20s countdown
+    // with delay text while the next 40s will be the actual countdown) 
     let delayTime = (isNaN(timerParams.delayTime)) ? 0 
         : convertTimeToMilliseconds(Number(timerParams.delayTime), delayUnit);
     // Show delayed countdown if true
     let delayDisplay = timerParams.delayDisplay === "";
+
+    // delayTime should always be less than total loopTime
+    if (delayTime >= loopTime) {
+        throw "ERROR: Cannot have a delayTime that is larger than total loopTime.";
+    }
 
     let numLoops = calculateNumLoops(now, seedDate, 0, loopTime, loopLimit);
     let numLoopsDelay = calculateNumLoops(now, seedDate, delayTime, loopTime, loopLimit);
@@ -248,7 +253,7 @@ function buildTimer(timerParams, num) {
         for (let className of COUNTDOWN_CLASSES) {
             let element = document.getElementsByClassName(className)[i];
             if (element === null) {
-                throw className + " CSS class is missing for countdown timer #" + i;
+                throw className + " CSS class is missing for countdown timer #" + i + ".";
             }
             // Gives each instance of repeating elements of same class unique ids
             // (e.g. #seedDate_1)
@@ -274,7 +279,7 @@ function convertTimeToMilliseconds(timeValue, timeUnit) {
     if (TIME_IN_MILLISECONDS[timeUnit] !== undefined) {
         return timeValue * TIME_IN_MILLISECONDS[timeUnit];
     }
-    throw "ERROR: Invalid time unit under an element with .loopLimit class: \"" + timeUnit + "\"";
+    throw "ERROR: Invalid time unit under an element with .loopLimit class: \"" + timeUnit + "\".";
 }
 
 // Calculating number of loops between current and initial datetime
