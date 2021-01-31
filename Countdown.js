@@ -120,10 +120,10 @@ function buildTimer(timerParams, num) {
     let numLoopsDelay = calculateNumLoops(now, seedDate, delayTime, loopTime, loopLimit);
 
     let endDate = findEndDate(seedDate, 0, numLoops, loopTime);
-    let endDateDelay = findEndDate(now, seedDate, numLoopsDelay, loopTime);
+    let endDateDelay = findEndDate(seedDate, delayTime, numLoopsDelay, loopTime);
 	
     // Accounts for Daylight Saving Time (DST) between now and target date 
-    // unless otherwise specified
+    // by default unless otherwise specified
     let dstOffset = (timerParams.dst === "") ? 
         (now.getTimezoneOffset() - endDate.getTimezoneOffset()) * 60 * 1000 : 0;
     let dstOffsetDelay = (timerParams.dst === "") ? 
@@ -284,7 +284,7 @@ function calculateNumLoops(now, seedDate, delayTime, loopTime, loopLimit) {
     // during an unfinished loop
     let numLoops = Math.ceil((now.getTime() - seedDate.getTime() + delayTime) / loopTime);
     if (numLoops > loopLimit) {
-        numLoops = loopLimit;
+        return loopLimit;
     }
     return numLoops;
 }
@@ -292,7 +292,7 @@ function calculateNumLoops(now, seedDate, delayTime, loopTime, loopLimit) {
 // Determining the end datetime based on initial datetime, 
 // loop duration, and the number of loops that the timer will cycle through.
 function findEndDate(seedDate, delayTime, numLoops, loopTime) {
-    return new Date(seedDate.getTime() + delayTime + (numLoops * loopTime));
+    return new Date(seedDate.getTime() - delayTime + (numLoops * loopTime));
 }
 
 // Total time between now and target date in milliseconds converted
