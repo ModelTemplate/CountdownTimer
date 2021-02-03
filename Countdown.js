@@ -64,6 +64,9 @@ if (document.getElementsByClassName("customcountdown").length > 0) {
     countdownInit();
 }
 
+/**
+ * Initializes countdown
+ */
 function countdownInit() {
     // Stores the innerHTML of elements with the CSS class associated with the key;
     // each element contains an object representing all the countdown elements
@@ -127,7 +130,11 @@ function buildTimer(timerParams, num) {
 
     let endDate = findEndDate(seedDate, 0, numLoops, loopTime);
     let endDateDelay = findEndDate(seedDate, delayTime, numLoopsDelay, loopTime);
-	
+    
+    // TODO: duplicate delay parameter may not be needed if we can figure out how to split one
+    // loopTime into two separate loops without adding additional parameters by doing some simple subtraction
+    // and comparison against delayTime 
+
     // Accounts for Daylight Saving Time (DST) between now and target date 
     // by default unless otherwise specified
     let dstOffset = (timerParams.dst === "") ? 
@@ -142,7 +149,7 @@ function buildTimer(timerParams, num) {
     // time string will result in "00021207200" thus far
     let timeDiff = calculateTimeDiff(now, endDate, dstOffset);  // in milliseconds, rounded to the nearest thousandths place
     let timeDiffDelay = calculateTimeDiff(now, endDateDelay, dstOffsetDelay);
-    console.log("Time diff: " + timeDiff + " | Delay time diff: " + timeDiffDelay + " | Normal diff and delay diff diff " + (timeDiff - timeDiffDelay));
+    console.log("Loop time: " + loopTime + " | Time diff: " + timeDiff + " | Delay time diff: " + timeDiffDelay + " | Loop time - time diff " + (loopTime - timeDiff));
 
     // Finds what time periods the specified date format wants
     let unitCounts = extractUnitCounts(timerParams.dateFormat);
@@ -168,7 +175,7 @@ function buildTimer(timerParams, num) {
     // (i.e. for 120 minutes & "hh mm ss" & "single": years = 0Y; months = 0M;
     // days = 0D; hours = 02h; minutes = 00m; seconds = 00s)
     // time string will result in "0Y0M0D02h00m00s" thus far
-    let timeUnits = extractDisplayUnits(timerParams.dateLabels);
+    let timeUnits = getDisplayUnits(timerParams.dateLabels);
 
     // Separates each time period in the time string by the specified cd.separators
     // (i.e. for 120 minutes & "hh mm ss" & "single" & " " or "&nbsp;": 
@@ -191,7 +198,7 @@ function buildTimer(timerParams, num) {
 
     // When delay time reaches inputted delay time show delay text, hide normal
     // text, and only show delay time periods specified by date format
-    } else if (/* Math.min(timeDiff, timeDiffDelay) === timeDiffDelay */ timeDiffDelay <= delayTime) {
+    } else if (/* Math.min(timeDiff, timeDiffDelay) === timeDiffDelay */ loopTime - timeDiff <= delayTime/*timeDiff - timeDiffDelay < 0*/) {
         document.getElementById("endText_" + num).setAttribute("style", "display:none");
         document.getElementById("bText_" + num).setAttribute("style", "display:none");
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
@@ -243,9 +250,12 @@ function buildTimer(timerParams, num) {
     updateBaroTimers(num, numLoops);
 }
 
-// Assuming that when an element with .customcountdown class is present
-// all the required elements for timer will be nested under it
-    function getTimersElements() {
+/**
+ * Maps countdown timers elements from DOM to individual timers.
+ * Assuming that when an element with .customcountdown class is present
+ * all the required elements for timer will be nested under it
+ */
+function getTimersElements() {
     let count = document.getElementsByClassName("customcountdown");
     countdownTimers = [];
 
@@ -277,6 +287,12 @@ function buildTimer(timerParams, num) {
     return countdownTimers;
 }
 
+/**
+ * Converts time to milliseconds
+ * @param {*} timeValue 
+ * @param {*} timeUnit - "Y", "M", "D", "h", "m", "s"
+ * @returns time in milliseconds
+ */
 function convertTimeToMilliseconds(timeValue, timeUnit) {
     if (TIME_IN_MILLISECONDS[timeUnit] !== undefined) {
         return timeValue * TIME_IN_MILLISECONDS[timeUnit];
@@ -284,8 +300,16 @@ function convertTimeToMilliseconds(timeValue, timeUnit) {
     throw "ERROR: Invalid time unit under an element with .loopLimit class: \"" + timeUnit + "\".";
 }
 
-// Calculating number of loops between current and initial datetime
-// Note that initial datetime is usually before current datetime.
+/**
+ * Calculating number of loops between current and initial datetime
+ * Note that initial datetime is usually before current datetime.
+ * @param {*} now 
+ * @param {*} seedDate 
+ * @param {*} delayTime 
+ * @param {*} loopTime 
+ * @param {*} loopLimit 
+ * @returns the number of loops that countdown timer will run
+ */
 function calculateNumLoops(now, seedDate, delayTime, loopTime, loopLimit) {
     // Math.ceil() is needed to account for the fact that timer can reach 0 
     // during an unfinished loop
@@ -296,14 +320,27 @@ function calculateNumLoops(now, seedDate, delayTime, loopTime, loopLimit) {
     return numLoops;
 }
 
-// Determining the end datetime based on initial datetime, 
-// loop duration, and the number of loops that the timer will cycle through.
+/**
+ * Determining the end datetime based on initial datetime, 
+ * loop duration, and the number of loops that the timer will cycle through.
+ * @param {*} seedDate - Date object
+ * @param {*} delayTime - delay in milliseconds
+ * @param {*} numLoops - number of countdown loops
+ * @param {*} loopTime - loop duration in milliseconds
+ * @returns a Date object representing end date of countdown
+ */
 function findEndDate(seedDate, delayTime, numLoops, loopTime) {
     return new Date(seedDate.getTime() - delayTime + (numLoops * loopTime));
 }
 
-// Total time between now and target date in milliseconds converted
-// to certain time period
+/**
+ * Total time between now and target date in milliseconds converted
+ * to certain time period.
+ * @param {*} now - Date object
+ * @param {*} endDate - Date object
+ * @param {*} dstOffset - DST offset in milliseconds
+ * @returns time difference in milliseconds, rounded to the nearest thousands
+ */
 function calculateTimeDiff(now, endDate, dstOffset) {
     // need to round to avoid skipping seconds
     // (example case: 7041 milliseconds => 5999 milliseconds)
@@ -311,9 +348,13 @@ function calculateTimeDiff(now, endDate, dstOffset) {
     return Math.round(timeDiff / 1000) * 1000;
 }
 
-// Based on the specified time periods desired, sets the time periods to
-// account for the other time periods
-// Note that timeDiff is in milliseconds
+/**
+ * Based on the specified time periods desired, sets the time periods to
+ * account for the other time periods.
+ * @param {*} timeDiff - time difference in milliseconds
+ * @param {*} unitCounts - dictionary that contains count of time units
+ * @returns a dictionary that contains time differences by unit
+ */
 function calcTimeDiffByUnit(timeDiff, unitCounts) {
     let timeDiffByUnit = {
         Y: 0,
@@ -336,7 +377,12 @@ function calcTimeDiffByUnit(timeDiff, unitCounts) {
     return timeDiffByUnit;
 }
 
-// Finding out how many digits to display for each time unit
+/**
+ * Finding out how many digits to display on countdown timer for each time unit.
+ * @param {*} dateFormat - string that represents date format; each unit is separated by spaces
+ * (e.g. "YY MM DD hh mm ss")
+ * @returns a dictionary that contains number of occurances per time unit
+ */
 function extractUnitCounts(dateFormat) {
     let unitCounts = {
         Y: 0,
@@ -355,6 +401,12 @@ function extractUnitCounts(dateFormat) {
     return unitCounts;
 }
 
+/**
+ * Get leading zeroes to be displayed for countdown timer per time unit.
+ * @param {*} timeDiffByUnit - a dictionary of time differences by time unit
+ * @param {*} unitCounts - a dictionary of counts by time unit
+ * @returns a dictionary that contains number of leading zeroes to be displayed per time unit
+ */
 function getLeadingZeroesPerUnit(timeDiffByUnit, unitCounts) {
     let unitLeadingZeroes = {
         Y: "",
@@ -374,7 +426,12 @@ function getLeadingZeroesPerUnit(timeDiffByUnit, unitCounts) {
     return unitLeadingZeroes;
 }
 
-function extractDisplayUnits(dateLabels) {
+/**
+ * Get display units for each time unit.
+ * @param {*} dateLabels - a string
+ * @returns a dictionary that contains display strings per time unit
+ */
+function getDisplayUnits(dateLabels) {
     let timeUnits = {};
     switch(dateLabels) {
         case "full":
@@ -396,15 +453,25 @@ function extractDisplayUnits(dateLabels) {
     return timeUnits;
 }
 
+/**
+ * Update Baro Ki'Teer timers.
+ * @param {*} num - countdown timer instance
+ * @param {*} numLoops - number of countdown timer loops that have passed
+ */
 function updateBaroTimers(num, numLoops) {
     for (let platform of Object.keys(BARO_COUNTDOWN_CLASSES)) {
         let className = BARO_COUNTDOWN_CLASSES[platform];
         if ($("." + className).length > 0) {
-            $("." + className + "_" + num).html(baroRelayTracker(numLoops - 1, platform));
+            $("." + className + "_" + num).html(baroRelayTracker(numLoops, platform));
         }
     }
 }
 
+/**
+ * Tracks what relay Baro is currently on.
+ * @param {*} count 
+ * @param {*} platform - "PC", "PS4", "XB1", or "NSW" 
+ */
 function baroRelayTracker(count, platform) {
     let rotationNum = count % 4;
     let planet = platformRelayDict[platform][rotationNum];
