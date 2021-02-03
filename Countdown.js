@@ -140,9 +140,9 @@ function buildTimer(timerParams, num) {
     // (i.e. for 120 minutes: years = 0; months = 0; days = 0;
     // hours = 2; minutes = 120; seconds = 7200)
     // time string will result in "00021207200" thus far
-    let timeDiff = calculateTimeDiff(now, endDate, dstOffset);  // in milliseconds
+    let timeDiff = calculateTimeDiff(now, endDate, dstOffset);  // in milliseconds, rounded to the nearest thousandths place
     let timeDiffDelay = calculateTimeDiff(now, endDateDelay, dstOffsetDelay);
-    console.log("Time diff: " + timeDiff + " | Delay time diff: " + timeDiffDelay + " | Delay time: " + delayTime);
+    console.log("Time diff: " + timeDiff + " | Delay time diff: " + timeDiffDelay + " | Normal diff and delay diff diff " + (timeDiff - timeDiffDelay));
 
     // Finds what time periods the specified date format wants
     let unitCounts = extractUnitCounts(timerParams.dateFormat);
@@ -191,7 +191,7 @@ function buildTimer(timerParams, num) {
 
     // When delay time reaches inputted delay time show delay text, hide normal
     // text, and only show delay time periods specified by date format
-    } else if (timeDiffDelay < timeDiff) {
+    } else if (/* Math.min(timeDiff, timeDiffDelay) === timeDiffDelay */ timeDiffDelay <= delayTime) {
         document.getElementById("endText_" + num).setAttribute("style", "display:none");
         document.getElementById("bText_" + num).setAttribute("style", "display:none");
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
@@ -305,7 +305,10 @@ function findEndDate(seedDate, delayTime, numLoops, loopTime) {
 // Total time between now and target date in milliseconds converted
 // to certain time period
 function calculateTimeDiff(now, endDate, dstOffset) {
-    return (endDate.getTime() - now.getTime()) + dstOffset;
+    // need to round to avoid skipping seconds
+    // (example case: 7041 milliseconds => 5999 milliseconds)
+    let timeDiff = (endDate.getTime() - now.getTime()) + dstOffset;
+    return Math.round(timeDiff / 1000) * 1000;
 }
 
 // Based on the specified time periods desired, sets the time periods to
