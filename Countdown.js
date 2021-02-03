@@ -1,5 +1,6 @@
 // Countdown timer that is accurate to the second and accounts for Daylight Savings Time (DST)
-// TODO: Fix delay timer being off
+// TODO: Fix delay timer appearing in middle of actual countdown even though actual countdown has not
+// gone down to zero
 
 // All of these CSS classes must be present on page in order for countdown timer to function
 const COUNTDOWN_CLASSES = ["seedDate", "bText", "bDelayText", "years", "months", "days",
@@ -141,7 +142,8 @@ function buildTimer(timerParams, num) {
     // time string will result in "00021207200" thus far
     let timeDiff = calculateTimeDiff(now, endDate, dstOffset);  // in milliseconds
     let timeDiffDelay = calculateTimeDiff(now, endDateDelay, dstOffsetDelay);
-	
+    console.log("Time diff: " + timeDiff + " | Delay time diff: " + timeDiffDelay + " | Delay time: " + delayTime);
+
     // Finds what time periods the specified date format wants
     let unitCounts = extractUnitCounts(timerParams.dateFormat);
 
@@ -189,7 +191,7 @@ function buildTimer(timerParams, num) {
 
     // When delay time reaches inputted delay time show delay text, hide normal
     // text, and only show delay time periods specified by date format
-    } else if ((Math.floor(timeDiffDelay / TIME_IN_MILLISECONDS["s"]) * TIME_IN_MILLISECONDS["s"]) < delayTime) {
+    } else if (timeDiffDelay < timeDiff) {
         document.getElementById("endText_" + num).setAttribute("style", "display:none");
         document.getElementById("bText_" + num).setAttribute("style", "display:none");
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
