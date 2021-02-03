@@ -65,7 +65,7 @@ if (document.getElementsByClassName("customcountdown").length > 0) {
 }
 
 /**
- * Initializes countdown
+ * Initializes countdown timers.
  */
 function countdownInit() {
     // Stores the innerHTML of elements with the CSS class associated with the key;
@@ -86,12 +86,16 @@ function countdownInit() {
 function updateTimers() {
     // Create countdown timer for each element with .customcountdown class
     for (let i = 0; i < countdownTimers.length; i++) {
-        buildTimer(countdownTimers[i], i);
+        updateTimer(countdownTimers[i], i);
     }
 }
 
-// Calculate time difference and rebuild timer each second
-function buildTimer(timerParams, num) {
+/**
+ * Calculate time difference and update timer each second.
+ * @param {*} timerParams - dictionary that contains parameters for countdown timer
+ * @param {*} num - countdown timer instance
+ */
+function updateTimer(timerParams, num) {
     let now = new Date();
 
     // Parameters are stored in innerHTML
