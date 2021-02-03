@@ -292,7 +292,7 @@ function getTimersElements() {
 }
 
 /**
- * Converts time to milliseconds
+ * Converts time to milliseconds.
  * @param {*} timeValue 
  * @param {*} timeUnit - "Y", "M", "D", "h", "m", "s"
  * @returns time in milliseconds
@@ -305,13 +305,12 @@ function convertTimeToMilliseconds(timeValue, timeUnit) {
 }
 
 /**
- * Calculating number of loops between current and initial datetime
- * Note that initial datetime is usually before current datetime.
- * @param {*} now 
- * @param {*} seedDate 
- * @param {*} delayTime 
- * @param {*} loopTime 
- * @param {*} loopLimit 
+ * Calculating number of loops between current and initial datetime.
+ * @param {*} now - Date object representing current datetime
+ * @param {*} seedDate - Date object that is before now
+ * @param {*} delayTime - delay in milliseconds
+ * @param {*} loopTime - loop duration in milliseconds
+ * @param {*} loopLimit - maximum number of loops countdown timer can run
  * @returns the number of loops that countdown timer will run
  */
 function calculateNumLoops(now, seedDate, delayTime, loopTime, loopLimit) {
