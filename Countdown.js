@@ -4,9 +4,6 @@
 // TODO: Fix delay timer appearing in middle of actual countdown even though actual countdown has not
 // gone down to zero
 
-// TODO: Merge loopTime with loopUnit, delayTime with delayUnit, and dateFormat with separators
-// (e.g. loopTime = "5s", delayTime = "10Y", dateFormat = "YY-MM-DD hh:mm:ss")
-
 // All of these CSS classes must be present on page in order for countdown timer to function
 const COUNTDOWN_CLASSES = ["seedDate", "bText", "bDelayText", "timer",
         "aText", "aDelayText", "loopTime", "loopLimit", "endText", 
@@ -124,7 +121,6 @@ function updateTimer(timerParams, num) {
     let delayDisplay = timerParams.delayDisplay === "";
 
     // delayTime should always be less than total loopTime
-    console.log(delayTime, " ", loopTime);
     if (delayTime >= loopTime) {
         throw "ERROR: Cannot have a delayTime that is larger than total loopTime.";
     }
@@ -395,7 +391,6 @@ function getDisplayUnits(dateLabels) {
 function formatTimerNumbers(dateFormat, timeDiffByUnit, timeUnits) {
     let timerText = dateFormat;
     let formatArr = dateFormat.split(/[^A-Za-z]/);  // e.g. ["YYYY", "MM", "DD"]
-    console.log(formatArr);
     for (let elem of formatArr) {
         let text = timeDiffByUnit[elem.charAt(0)] + "";
         text = text.padStart(elem.length, "0");  // padding zeroes for uniformity
