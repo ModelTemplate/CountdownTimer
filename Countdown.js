@@ -217,7 +217,7 @@ function updateTimer(timerParams, num) {
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:visible");
         if (delayDisplay) {
             // Adding the time values onto the page for delayed time period
-            $("#timer_" + num).html(formatTimerNumbers(timeDiffByUnitDelay, unitCounts, unitLeadingZeroesDelay, timeUnits, separators));
+            $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffByUnitDelay, unitCounts, unitLeadingZeroesDelay, timeUnits, separators));
         } else {
             $("#timer_" + num).html("");
         }
@@ -236,7 +236,7 @@ function updateTimer(timerParams, num) {
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
         document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
         // Adding the time values onto the page for "true" countdown
-        $("#timer_" + num).html(formatTimerNumbers(timeDiffByUnit, unitCounts, unitLeadingZeroes, timeUnits, separators));
+        $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffByUnit, unitCounts, unitLeadingZeroes, timeUnits, separators));
     }
     updateBaroTimers(num, numLoops);
 }
@@ -445,25 +445,21 @@ function getDisplayUnits(dateLabels) {
 
 /**
  * Formats the numbers of the countdown timer text.
+ * @param {*} dateFormat - string that represents date format; each unit is separated by a non-alphabetical
+ * character (e.g. "YY-MM-DD hh:mm:ss")
  * @param {*} timeDiffByUnit - dictionary that contains time differences per time unit
- * @param {*} unitCounts - dictionary that contains count of time units
- * @param {*} unitLeadingZeroes - dictionary with number of leading zeroes per time unit
  * @param {*} timeUnits - dictionary of display text per time unit
- * @param {*} separators - string that separates each time unit
- * @param {*} num - countdown timer instance
  * @returns a string of the formatted text
  */
-function formatTimerNumbers(timeDiffByUnit, unitCounts, unitLeadingZeroes, timeUnits, separators) {
-    let timerText = "";
+function formatTimerNumbers(dateFormat, timeDiffByUnit, timeUnits) {
+    let timerText = dateFormat;
+    let formatArr = dateFormat.split(/[^A-Za-z]/);
+    let i = 0;
     for (let unit of Object.keys(TIME_UNIT_ABBR)) {
         let unitAbbr = TIME_UNIT_ABBR[unit];
-        if (unitCounts[unitAbbr] !== 0) {
-            let text = unitLeadingZeroes[unitAbbr] + timeDiffByUnit[unitAbbr] + timeUnits[unit];
-            if (unitAbbr !== "s") {
-                text += separators;
-            }
-            timerText += text;
-        }
+        let text = timeDiffByUnit[unitAbbr] + timeUnits[unit];
+        let regex = new RegExp(formatArr[i++]);
+        timerText = timerText.replace(regex, text);
     }
     return timerText;
 }
