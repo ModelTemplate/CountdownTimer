@@ -34,7 +34,7 @@ Next, copy and paste the JavaScript code onto a page ending with ".js" within th
 If you want to use this countdown timer on [FANDOM](https://en.wikipedia.org/wiki/Fandom_(website)) wikis, you will also need to add the name of MediaWiki page containing the script to the MediaWiki:ImportJS page. See [this](https://community.fandom.com/wiki/Help:Including_additional_CSS_and_JS) for more information.
 
 # Development
-Please feel free to fork this repository and develop on it. Issues and suggestions can be posted under the issues tab.
+Please feel free to fork this repository and develop on it. Issues and suggestions can be posted under the issues tab. Code written in Countdown.js **must** be written in [ECMAScript](https://en.wikipedia.org/wiki/ECMAScript) 3rd Edition compliant syntax in order to run on FANDOM wikis.
 
 ## Notes
 * [FANDOM](https://en.wikipedia.org/wiki/Fandom_(website)) uses [MediaWiki](https://en.wikipedia.org/wiki/MediaWiki) 1.33.3 as of 1/29/2021.
