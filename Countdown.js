@@ -77,7 +77,7 @@ function countdownInit() {
     updateTimers();
     console.log("Countdown timers started.");
 
-    // Update timer every second
+    // Update timers every second
     setInterval(function() {
         updateTimers();
     }, 1000);
@@ -153,11 +153,11 @@ function updateTimer(timerParams, num) {
     // time string will result in "00021207200" thus far
     let timeDiff = calculateTimeDiff(now, endDate, dstOffset);  // in milliseconds, rounded to the nearest thousandths place
     let timeDiffDelay = calculateTimeDiff(now, endDateDelay, dstOffsetDelay);
-    console.log("Loop time: " + loopTime + 
-        " | Time diff: " + timeDiff + 
-        " | Delay time diff: " + timeDiffDelay + 
-        " | Loop time - time diff " + (loopTime - timeDiff)
-    );
+    // console.log("Loop time: " + loopTime + 
+    //     " | Time diff: " + timeDiff + 
+    //     " | Delay time diff: " + timeDiffDelay + 
+    //     " | Loop time - time diff " + (loopTime - timeDiff)
+    // );
 
     let dateFormat = (timerParams.dateFormat === "") ? "YY MM DD hh mm ss" 
         : timerParams.dateFormat;

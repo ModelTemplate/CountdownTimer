@@ -20,7 +20,7 @@
 // let diff = end.getTime() - start.getTime();
 // generateCountdownHTML(new Countdown({ seedDate: start.toISOString(), loopTime: "1D", loopLimit: (diff / 86400000) + 1 }), 
 //         "Testing one day loop starting at 1/1/2021 and ending one day from today (UTC)");
-generateCountdownHTML(new Countdown({ loopTime: "30s", delayTime: "10s" }), "Testing delay timer");
+generateCountdownHTML(new Countdown({ loopTime: "30s", delayTime: "10s" }), "Testing 10 second delay timer");
 generateCountdownHTML(new Countdown({ loopTime: "30s", delayTime: "10s", delayDisplay: false }), "Testing hiding the delay timer");
 
 /**
