@@ -15,31 +15,26 @@ Create a [Template](https://www.mediawiki.org/wiki/Help:Templates) page that tra
         <span style="display:none" class="bText">&nbsp;Timer Ends In</span>
         <span style="display:none" class="bDelayText">&nbsp;Delay Timer Ends In</span>
 
-        <span class="years"></span>
-        <span class="months"></span>
-        <span class="days"></span>
-        <span class="hours"></span>
-        <span class="minutes"></span>
-        <span class="seconds"></span>
+        <span class="timer"></span>
 
         <span style="display:none" class="aText">&nbsp;(Placeholder text)</span>
         <span style="display:none" class="aDelayText">&nbsp;(Placeholder delay text)</span>
-        <span style="display:none" class="loopTime">10</span>
-        <span style="display:none" class="loopUnit">s</span>
+        <span style="display:none" class="loopTime">10s</span>
         <span style="display:none" class="loopLimit">1000</span>
         <span style="display:none" class="endText">Countdown Complete</span>
         <span style="display:none" class="delayTime"></span>
-        <span style="display:none" class="delayUnit"></span>
         <span style="display:none" class="delayDisplay">true</span>
         <span style="display:none" class="dst"></span>
         <span style="display:none" class="dateFormat"></span>
         <span style="display:none" class="dateLabels">single</span>
-        <span style="display:none" class="separators"> </span>
     </span>
 
 Next, copy and paste the JavaScript code onto a page ending with ".js" within the [MediaWiki namespace](https://www.mediawiki.org/wiki/Help:Namespaces#MediaWiki) in order to have the countdown code run on all pages within the wiki.
 
 If you want to use this countdown timer on [FANDOM](https://en.wikipedia.org/wiki/Fandom_(website)) wikis, you will also need to add the name of MediaWiki page containing the script to the MediaWiki:ImportJS page. See [this](https://community.fandom.com/wiki/Help:Including_additional_CSS_and_JS) for more information.
+
+# Development
+Please feel free to fork this repository and develop on it. Issues and suggestions can be posted under the issues tab.
 
 ## Notes
 * [FANDOM](https://en.wikipedia.org/wiki/Fandom_(website)) uses [MediaWiki](https://en.wikipedia.org/wiki/MediaWiki) 1.33.3 as of 1/29/2021.
