@@ -1,28 +1,39 @@
 // Generating HTML for testing
+// https://www.markhansen.co.nz/javascript-optional-parameters/
 
-function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit, bText, 
-        bDelayText, aText, aDelayText, endText, delayDisplay, dst, dateFormat, dateLabels, separators) {
+/**
+ * Represents a countdown timer
+ * @param {*} seedDate 
+ * @param {*} loopTime 
+ * @param {*} loopUnit 
+ * @param {*} options 
+ */
+function Countdown(seedDate, loopTime, loopUnit, options) {
+    var options = options ?? {};
+
     this.seedDate = seedDate ?? "January 1, 1970 00:00:00 UTC";
-    this.bText = bText ?? "";
-    this.bDelayText = bDelayText ?? "";
-    this.aText = aText ?? "";
-    this.aDelayText = aDelayText ?? "";
     this.loopTime = loopTime ?? 60;
     this.loopUnit = loopUnit ?? "s";
-    this.loopLimit = loopLimit ?? -1;
-    this.endText = endText ?? "";
-    this.delayTime = delayTime ?? 0;
-    this.delayUnit = delayUnit ?? "s";
-    this.delayDisplay = delayDisplay ?? "";
-    this.dst = dst ?? "";
-    this.dateFormat = dateFormat ?? "YY MM DD hh mm ss";
-    this.dateLabels = dateLabels ?? "single";
-    this.separators = separators ?? " ";
+
+    this.loopLimit = options.loopLimit || -1;
+    this.bText = options.bText || "";
+    this.bDelayText = options.bDelayText || "";
+    this.aText = options.aText || "";
+    this.aDelayText = options.aDelayText || "";
+    this.endText = options.endText || "";
+    this.delayTime = options.delayTime || 0;
+    this.delayUnit = options.delayUnit || "s";
+    this.delayDisplay = options.delayDisplay || "";
+    this.dst = options.dst || "";
+    this.dateFormat = options.dateFormat || "YY MM DD hh mm ss";
+    this.dateLabels = options.dateLabels || "single";
+    this.separators = options.separators || " ";
 }
 
 var countdown = new Countdown("January 30, 2021 22:35:00 UTC");
 console.log(countdown);
 generateHTML(countdown);
+generateHTML(new Countdown(null, 10, null));
 
 /**
  * Add HTML elements related to countdown to DOM

@@ -202,7 +202,7 @@ function updateTimer(timerParams, num) {
 
     // When delay time reaches inputted delay time show delay text, hide normal
     // text, and only show delay time periods specified by date format
-    } else if (/* Math.min(timeDiff, timeDiffDelay) === timeDiffDelay */ loopTime - timeDiff <= delayTime/*timeDiff - timeDiffDelay < 0*/) {
+    } else if (/* Math.min(timeDiff, timeDiffDelay) === timeDiffDelay */ loopTime - timeDiff < delayTime/*timeDiff - timeDiffDelay < 0*/) {
         document.getElementById("endText_" + num).setAttribute("style", "display:none");
         document.getElementById("bText_" + num).setAttribute("style", "display:none");
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
