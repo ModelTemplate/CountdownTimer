@@ -11,7 +11,7 @@
 const COUNTDOWN_CLASSES = ["seedDate", "bText", "bDelayText", "timer",
         "aText", "aDelayText", "loopTime", "loopUnit", "loopLimit", 
         "endText", "delayTime", "delayUnit", "delayDisplay", "dst",
-        "dateFormat", "dateLabels", "separators"];
+        "dateFormat", "dateLabels"];
 Object.freeze(COUNTDOWN_CLASSES);
 
 const BARO_COUNTDOWN_CLASSES = {
@@ -164,7 +164,8 @@ function updateTimer(timerParams, num) {
     //     " | Loop time - time diff " + (loopTime - timeDiff)
     // );
 
-    let dateFormat = timerParams.dateFormat;
+    let dateFormat = (timerParams.dateFormat === "") ? "YY MM DD hh mm ss" 
+        : timerParams.dateFormat;
 
     // Dictionary of time units based on the specified time periods desired, 
     // sets the time periods to account for the other time periods
@@ -423,11 +424,14 @@ function getDisplayUnits(dateLabels) {
 function formatTimerNumbers(dateFormat, timeDiffByUnit, timeUnits) {
     let timerText = dateFormat;
     let formatArr = dateFormat.split(/[^A-Za-z]/);  // e.g. ["YYYY", "MM", "DD"]
+    console.log(formatArr);
     for (let elem of formatArr) {
         let text = timeDiffByUnit[elem.charAt(0)] + timeUnits[elem.charAt(0)];
+        console.log(text);
         let regex = new RegExp(elem);
         timerText = timerText.replace(regex, text);
     }
+    // console.log(timerText);
     return timerText;
 }
 
