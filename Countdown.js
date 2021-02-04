@@ -164,24 +164,23 @@ function updateTimer(timerParams, num) {
     //     " | Loop time - time diff " + (loopTime - timeDiff)
     // );
 
-    // Finds what time periods the specified date format wants
-    let unitCounts = extractUnitCounts(timerParams.dateFormat);
+    let dateFormat = timerParams.dateFormat;
 
     // Dictionary of time units based on the specified time periods desired, 
     // sets the time periods to account for the other time periods
     // (i.e. for 120 minutes & "hh mm ss": years = 0; months = 0; days = 0;
     // hours = 2; minutes = 0; seconds = 0)
     // time string will result in "000200" thus far
-    let timeDiffByUnit = calcTimeDiffByUnit(timeDiff, unitCounts);
-    let timeDiffByUnitDelay = calcTimeDiffByUnit(timeDiffDelay, unitCounts);
+    let timeDiffByUnit = calcTimeDiffByUnit(timeDiff, dateFormat);
+    let timeDiffByUnitDelay = calcTimeDiffByUnit(timeDiffDelay, dateFormat);
 	
     // Based on the specified time periods' desired format, gives time string
     // leading zeroes
     // (i.e. for 120 minutes & "hh mm ss": years = 0; months = 0; days = 0;
     // hours = 02; minutes = 00; seconds = 00)
     // time string will result in "000020000" thus far
-    let unitLeadingZeroes = getLeadingZeroesPerUnit(timeDiffByUnit, unitCounts);
-    let unitLeadingZeroesDelay = getLeadingZeroesPerUnit(timeDiffByUnitDelay, unitCounts);
+    // let unitLeadingZeroes = getLeadingZeroesPerUnit(timeDiffByUnit, unitCounts);
+    // let unitLeadingZeroesDelay = getLeadingZeroesPerUnit(timeDiffByUnitDelay, unitCounts);
 
     // Based on the specified time periods' desired units, gives each time
     // period in the string certain units
@@ -335,10 +334,11 @@ function calculateTimeDiff(now, endDate, dstOffset) {
  * Based on the specified time periods desired, sets the time periods to
  * account for the other time periods.
  * @param {*} timeDiff - time difference in milliseconds
- * @param {*} unitCounts - dictionary that contains count of time units
+ * @param {*} dateFormat - string that represents date format; each unit is separated by a non-alphabetical
+ * character (e.g. "YY-MM-DD hh:mm:ss")
  * @returns a dictionary that contains time differences per time unit
  */
-function calcTimeDiffByUnit(timeDiff, unitCounts) {
+function calcTimeDiffByUnit(timeDiff, dateFormat) {
     let timeDiffByUnit = {
         Y: 0,
         M: 0,
@@ -350,7 +350,7 @@ function calcTimeDiffByUnit(timeDiff, unitCounts) {
     for (let unit of Object.keys(TIME_UNIT_ABBR)) {
         let unitAbbr = TIME_UNIT_ABBR[unit];
         let timeInMilliseconds = TIME_IN_MILLISECONDS[unitAbbr];
-        if (unitCounts[unitAbbr] > 0) {
+        if (dateFormat.includes(unitAbbr)) {
             // calculating how many of a time unit can fit in this time frame
             let numTimeUnits = Math.floor(timeDiff / timeInMilliseconds);
             timeDiffByUnit[unitAbbr] = numTimeUnits;
@@ -395,17 +395,17 @@ function getDisplayUnits(dateLabels) {
     switch(dateLabels) {
         case "full":
             for (let unit of Object.keys(TIME_UNIT_ABBR)) {
-                timeUnits[unit] = " " + unit + "s";
+                timeUnits[TIME_UNIT_ABBR[unit]] = " " + unit + "s";
             }
             break;
         case "single":
             for (let unit of Object.keys(TIME_UNIT_ABBR)) {
-                timeUnits[unit] = TIME_UNIT_ABBR[unit];
+                timeUnits[TIME_UNIT_ABBR[unit]] = TIME_UNIT_ABBR[unit];
             }
             break;
         default:
             for (let unit of Object.keys(TIME_UNIT_ABBR)) {
-                timeUnits[unit] = "";
+                timeUnits[TIME_UNIT_ABBR[unit]] = "";
             }
             break;
     }
@@ -422,12 +422,10 @@ function getDisplayUnits(dateLabels) {
  */
 function formatTimerNumbers(dateFormat, timeDiffByUnit, timeUnits) {
     let timerText = dateFormat;
-    let formatArr = dateFormat.split(/[^A-Za-z]/);
-    let i = 0;
-    for (let unit of Object.keys(TIME_UNIT_ABBR)) {
-        let unitAbbr = TIME_UNIT_ABBR[unit];
-        let text = timeDiffByUnit[unitAbbr] + timeUnits[unit];
-        let regex = new RegExp(formatArr[i++]);
+    let formatArr = dateFormat.split(/[^A-Za-z]/);  // e.g. ["YYYY", "MM", "DD"]
+    for (let elem of formatArr) {
+        let text = timeDiffByUnit[elem.charAt(0)] + timeUnits[elem.charAt(0)];
+        let regex = new RegExp(elem);
         timerText = timerText.replace(regex, text);
     }
     return timerText;
