@@ -4,18 +4,18 @@
 // https://stackoverflow.com/questions/50715033/javascript-constructor-with-optional-parameters
 
 generateCountdownHTML(new Countdown());
-generateCountdownHTML(new Countdown({ loopTime: 10 }), "Testing 10 second loop for ∞ times");
-generateCountdownHTML(new Countdown({ loopTime: 1, loopUnit: "m" }), "Testing one minute loop for ∞ times");
-generateCountdownHTML(new Countdown({ loopTime: 1, loopUnit: "h" }), "Testing one hour loop for ∞ times");
-generateCountdownHTML(new Countdown({ loopTime: 1, loopUnit: "D", loopLimit: 1000 }), "Testing one day loop for 1000 times");
-generateCountdownHTML(new Countdown({ loopTime: 1, loopUnit: "M", loopLimit: 1000 }), "Testing one month loop for 1000 times");
-generateCountdownHTML(new Countdown({ loopTime: 1, loopUnit: "Y", loopLimit: 1000 }), "Testing one year loop for 1000 times");
-generateCountdownHTML(new Countdown({ loopTime: 10, loopLimit: 0 }), "Testing 10 second loop for 0 times");
+generateCountdownHTML(new Countdown({ loopTime: "10s" }), "Testing 10 second loop for ∞ times");
+generateCountdownHTML(new Countdown({ loopTime: "1m" }), "Testing one minute loop for ∞ times");
+generateCountdownHTML(new Countdown({ loopTime: "1h" }), "Testing one hour loop for ∞ times");
+generateCountdownHTML(new Countdown({ loopTime: "1D", loopLimit: 1000 }), "Testing one day loop for 1000 times");
+generateCountdownHTML(new Countdown({ loopTime: "1M", loopLimit: 1000 }), "Testing one month loop for 1000 times");
+generateCountdownHTML(new Countdown({ loopTime: "1Y", loopLimit: 1000 }), "Testing one year loop for 1000 times");
+generateCountdownHTML(new Countdown({ loopTime: "10s", loopLimit: 0 }), "Testing 10 second loop for 0 times");
 generateCountdownHTML(new Countdown({ 
-    seedDate: "January 1, 2021 00:00:00 UTC", loopTime: 1, loopUnit: "Y", loopLimit: 1000, bText: "Countdown (", aText: ")", 
-    dateFormat: "YY", dateLabels: "full", separators: "-"
+    seedDate: "January 1, 2021 00:00:00 UTC", loopTime: "2Y", loopLimit: 1000, bText: "Countdown (", aText: ")", 
+    dateFormat: "YY", dateLabels: "full"
 }), "Testing formatting");
-generateCountdownHTML(new Countdown({ loopTime: 10, delayTime: 5 }), "Testing delay timer");
+generateCountdownHTML(new Countdown({ loopTime: "10s", delayTime: "5s" }), "Testing delay timer");
 
 /**
  * Represents a countdown timer.
@@ -23,25 +23,21 @@ generateCountdownHTML(new Countdown({ loopTime: 10, delayTime: 5 }), "Testing de
  */
 function Countdown({
     seedDate = "January 1, 1970 00:00:00 UTC", 
-    loopTime = 60, 
-    loopUnit = "s", 
+    loopTime = "60s",
     loopLimit = -1, 
     bText = "Timer Ends In ", 
     bDelayText = "Delay Timer Ends In ", 
     aText = "", 
     aDelayText = "", 
     endText = "Countdown Complete", 
-    delayTime = 0, 
-    delayUnit = "s", 
+    delayTime = "0s",
     delayDisplay = true, 
     dst = true, 
     dateFormat = "YY MM DD hh mm ss", 
     dateLabels = "single", 
-    separators = " "
 } = {}) {
     this.seedDate = seedDate;
     this.loopTime = loopTime;
-    this.loopUnit = loopUnit;
     this.loopLimit = loopLimit;
 
     this.bText = bText;
@@ -53,12 +49,10 @@ function Countdown({
     this.aDelayText = aDelayText;
     this.endText = endText;
     this.delayTime = delayTime;
-    this.delayUnit = delayUnit;
     this.delayDisplay = delayDisplay ? "" : "false";
     this.dst = dst ? "" : "false";
     this.dateFormat = dateFormat;
     this.dateLabels = dateLabels;
-    this.separators = separators;
 }
 
 // TODO: Why do timer elements use Ariel font?

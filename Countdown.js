@@ -9,9 +9,8 @@
 
 // All of these CSS classes must be present on page in order for countdown timer to function
 const COUNTDOWN_CLASSES = ["seedDate", "bText", "bDelayText", "timer",
-        "aText", "aDelayText", "loopTime", "loopUnit", "loopLimit", 
-        "endText", "delayTime", "delayUnit", "delayDisplay", "dst",
-        "dateFormat", "dateLabels"];
+        "aText", "aDelayText", "loopTime", "loopLimit", "endText", 
+        "delayTime", "delayDisplay", "dst", "dateFormat", "dateLabels"];
 Object.freeze(COUNTDOWN_CLASSES);
 
 const BARO_COUNTDOWN_CLASSES = {
@@ -107,29 +106,25 @@ function updateTimer(timerParams, num) {
     let seedDate = new Date((timerParams.seedDate === "") ? "December 3, 2015 00:00:00 UTC" 
         : timerParams.seedDate);
 
-    let loopUnit = (timerParams.loopUnit === "") ? "s" 
-        : timerParams.loopUnit;
     // Time between loop iterations (i.e. duration of a loop)
-    let loopTime = (isNaN(timerParams.loopTime)) ? 0 
-        : convertTimeToMilliseconds(Number(timerParams.loopTime), loopUnit);
+    let loopTime = convertTimeToMilliseconds(timerParams.loopTime);
     // Maximum number of loop iterations; it loopLimit is less than 0, then effectively 
     // treat it as infinite number of loops
     let loopLimit = (isNaN(timerParams.loopLimit)) ? 0 : 
         (timerParams.loopLimit < 0) ? Number.MAX_SAFE_INTEGER 
         : Number(timerParams.loopLimit);
 
-    let delayUnit = (timerParams.delayUnit === "") ? "s" 
-        : timerParams.delayUnit;
     // Splits total loopTime into two time periods, one that is the delayed countdown (i.e.
     // a countdown of the countdown) and the other is the actual countdown
     // (e.g. if delayTime == 20s and loopTime = 60s, the first 20s will be a 20s countdown
     // with delay text while the next 40s will be the actual countdown) 
-    let delayTime = (isNaN(timerParams.delayTime)) ? 0 
-        : convertTimeToMilliseconds(Number(timerParams.delayTime), delayUnit);
+    let delayTime = convertTimeToMilliseconds(timerParams.delayTime);
+
     // Show delayed countdown if true
     let delayDisplay = timerParams.delayDisplay === "";
 
     // delayTime should always be less than total loopTime
+    console.log(delayTime, " ", loopTime);
     if (delayTime >= loopTime) {
         throw "ERROR: Cannot have a delayTime that is larger than total loopTime.";
     }
@@ -241,7 +236,7 @@ function getTimersElements() {
         for (let className of COUNTDOWN_CLASSES) {
             let element = document.getElementsByClassName(className)[i];
             if (element == null) {
-                throw className + " CSS class is missing for countdown timer #" + i + ".";
+                throw "ERROR: " + className + " CSS class is missing for countdown timer instance #" + i + ".";
             }
             // Gives each instance of repeating elements of same class unique ids
             // (e.g. #seedDate_1)
@@ -264,16 +259,25 @@ function getTimersElements() {
 }
 
 /**
- * Converts time to milliseconds.
- * @param {*} timeValue 
- * @param {*} timeUnit - "Y", "M", "D", "h", "m", "s"
+ * Converts time to milliseconds. Ignores sign and decimals. Default unit is seconds ("s") and
+ * default number is zero.
+ * @param {*} time = a string with a number and a time unit associated (e.g. "50s" is 50 seconds) 
  * @returns time in milliseconds
  */
-function convertTimeToMilliseconds(timeValue, timeUnit) {
-    if (TIME_IN_MILLISECONDS[timeUnit] !== undefined) {
-        return timeValue * TIME_IN_MILLISECONDS[timeUnit];
+function convertTimeToMilliseconds(time) {
+    let number = time.match(/\d+/);
+    let unit = time.match(/[A-Za-z]+/);
+    if (unit === null) {
+        unit = "s";
     }
-    throw "ERROR: Invalid time unit under an element with .loopLimit class: \"" + timeUnit + "\".";
+    if (number === null) {
+        number = 0;
+    }
+    if (TIME_IN_MILLISECONDS[unit] !== undefined) {
+        return number * TIME_IN_MILLISECONDS[unit];
+    }
+    throw "ERROR: Invalid time unit (" + unit + ") in a .loopTime and/or .delayTime CSS class. " + 
+            "Valid units: \"Y\", \"M\", \"D\", \"h\", \"m\", \"s\"";
 }
 
 /**
