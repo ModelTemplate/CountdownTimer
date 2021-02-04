@@ -1,4 +1,6 @@
 // Countdown timer that is accurate to the second and accounts for Daylight Savings Time (DST)
+// Reference: https://www.w3schools.com/howto/howto_js_countdown.asp
+
 // TODO: Fix delay timer appearing in middle of actual countdown even though actual countdown has not
 // gone down to zero
 
@@ -190,7 +192,7 @@ function updateTimer(timerParams, num) {
     // years = 0Y ; months = 0M ; days = 0D ; hours = 02h ;
     // minutes = 00m ; seconds = 00s)
     // time string will result in "0Y 0M 0D 02h 00m 00s" thus far
-    let sep = timerParams.separators;
+    let separators = timerParams.separators;
 
     // When loop iterations reaches loop limit, hide normal text, hide delay
     // text, hide normal/delay time periods, and only show end of loop text
@@ -214,16 +216,7 @@ function updateTimer(timerParams, num) {
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:visible");
         if (delayDisplay) {
             // Adding the time values onto the page for delayed time period
-            for (let unit of Object.keys(TIME_UNIT_ABBR)) {
-                let unitAbbr = TIME_UNIT_ABBR[unit];
-                if (unitCounts[unitAbbr] !== 0) {
-                    let text = unitLeadingZeroesDelay[unitAbbr] + timeDiffByUnitDelay[unitAbbr] + timeUnits[unit];
-                    if (unitAbbr !== "s") {
-                        text += sep;
-                    }
-                    $("#" + unit.toLowerCase() + "s_" + num).html(text);
-                }
-            }
+            formatTimerNumbers(timeDiffByUnitDelay, unitCounts, unitLeadingZeroesDelay, timeUnits, separators, num);
         } else {
             for (let unit of Object.keys(TIME_UNIT_ABBR)) {
                 $("#" + unit.toLowerCase() + "s_" + num).html("");
@@ -244,16 +237,7 @@ function updateTimer(timerParams, num) {
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
         document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
         // Adding the time values onto the page for "true" countdown
-        for (let unit of Object.keys(TIME_UNIT_ABBR)) {
-            let unitAbbr = TIME_UNIT_ABBR[unit];
-            if (unitCounts[unitAbbr] !== 0) {
-                let text = unitLeadingZeroes[unitAbbr] + timeDiffByUnit[unitAbbr] + timeUnits[unit];
-                if (unitAbbr !== "s") {
-                    text += sep;
-                }
-                $("#" + unit.toLowerCase() + "s_" + num).html(text);
-            }
-        }
+        formatTimerNumbers(timeDiffByUnit, unitCounts, unitLeadingZeroes, timeUnits, separators, num);
     }
     updateBaroTimers(num, numLoops);
 }
@@ -360,7 +344,7 @@ function calculateTimeDiff(now, endDate, dstOffset) {
  * account for the other time periods.
  * @param {*} timeDiff - time difference in milliseconds
  * @param {*} unitCounts - dictionary that contains count of time units
- * @returns a dictionary that contains time differences by unit
+ * @returns a dictionary that contains time differences per time unit
  */
 function calcTimeDiffByUnit(timeDiff, unitCounts) {
     let timeDiffByUnit = {
@@ -458,6 +442,31 @@ function getDisplayUnits(dateLabels) {
             break;
     }
     return timeUnits;
+}
+
+/**
+ * Formats the numbers of the countdown timer text.
+ * @param {*} timeDiffByUnit - dictionary that contains time differences per time unit
+ * @param {*} unitCounts - dictionary that contains count of time units
+ * @param {*} unitLeadingZeroes - dictionary with number of leading zeroes per time unit
+ * @param {*} timeUnits - dictionary of display text per time unit
+ * @param {*} separators - string that separates each time unit
+ * @param {*} num - countdown timer instance
+ * @returns a string of the formatted text
+ */
+function formatTimerNumbers(timeDiffByUnit, unitCounts, unitLeadingZeroes, timeUnits, separators, num) {
+    let timerText = "";
+    for (let unit of Object.keys(TIME_UNIT_ABBR)) {
+        let unitAbbr = TIME_UNIT_ABBR[unit];
+        if (unitCounts[unitAbbr] !== 0) {
+            let text = unitLeadingZeroes[unitAbbr] + timeDiffByUnit[unitAbbr] + timeUnits[unit];
+            if (unitAbbr !== "s") {
+                text += separators;
+            }
+            $("#" + unit.toLowerCase() + "s_" + num).html(text);
+        }
+    }
+    return timerText;
 }
 
 /**

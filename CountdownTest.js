@@ -14,8 +14,8 @@ generateCountdownHTML(new Countdown({ loopTime: 1, loopUnit: "M", loopLimit: 100
 generateCountdownHTML(new Countdown({ loopTime: 1, loopUnit: "Y", loopLimit: 1000 }), "Testing one year loop for 1000 times");
 generateCountdownHTML(new Countdown({ loopTime: 10, loopLimit: 0 }), "Testing 10 second loop for 0 times");
 generateCountdownHTML(new Countdown({ 
-    loopTime: 1, loopUnit: "Y", loopLimit: 1000, bText: "Countdown (", aText: ")", 
-    dateFormat: "YYYY MM DD HHHH MMMM SSSS", dateLabels: "full", separators: "-"
+    seedDate: "January 1, 2021 00:00:00 UTC", loopTime: 1, loopUnit: "Y", loopLimit: 1000, bText: "Countdown (", aText: ")", 
+    dateFormat: "YY", dateLabels: "full", separators: "-"
 }), "Testing formatting");
 generateCountdownHTML(new Countdown({ loopTime: 10, delayTime: 5 }), "Testing delay timer");
 
@@ -83,7 +83,7 @@ function generateCountdownHTML(countdown, testString = "Timer Test") {
     for (let key of Object.keys(countdown)) {
         let newElement = document.createElement("span");
         newElement.className = key;
-        newElement.style = (TIME_UNITS.includes(key)) ? "display:visible" : "display:none;";
+        newElement.style = (TIME_UNITS.includes(key)) ? "display:visible;" : "display:none;";
         newElement.innerHTML = countdown[key];
         countdownElement.appendChild(newElement);
     }
