@@ -3,7 +3,8 @@
 // https://www.markhansen.co.nz/javascript-optional-parameters/
 // https://stackoverflow.com/questions/50715033/javascript-constructor-with-optional-parameters
 
-document.body.appendChild(document.createElement("h3"));
+const TIME_UNITS = ["years", "months", "days", "hours", "minutes", "seconds"];
+
 generateCountdownHTML(new Countdown());
 generateCountdownHTML(new Countdown({ loopTime: 10 }), "Testing 10 second loop for ∞ times");
 generateCountdownHTML(new Countdown({ loopTime: 1, loopUnit: "m" }), "Testing one minute loop for ∞ times");
@@ -27,8 +28,8 @@ function Countdown({
     loopTime = 60, 
     loopUnit = "s", 
     loopLimit = -1, 
-    bText = "Timer Ends In", 
-    bDelayText = "Delay Timer Ends In", 
+    bText = "Timer Ends In ", 
+    bDelayText = "Delay Timer Ends In ", 
     aText = "", 
     aDelayText = "", 
     endText = "Countdown Complete", 
@@ -44,8 +45,17 @@ function Countdown({
     this.loopTime = loopTime;
     this.loopUnit = loopUnit;
     this.loopLimit = loopLimit;
+
     this.bText = bText;
     this.bDelayText = bDelayText;
+
+    this.years = "";
+    this.months = "";
+    this.days = "";
+    this.hours = "";
+    this.minutes = "";
+    this.seconds = "";
+
     this.aText = aText;
     this.aDelayText = aDelayText;
     this.endText = endText;
@@ -67,13 +77,13 @@ function generateCountdownHTML(countdown, testString = "Timer Test") {
     testHeader.innerText = testString;
     document.body.appendChild(testHeader);
 
-    let countdownElement = document.createElement("span");
+    var countdownElement = document.createElement("span");
     countdownElement.className = "customcountdown";
     countdownElement.style = "font-size:18px;";
     for (let key of Object.keys(countdown)) {
         let newElement = document.createElement("span");
         newElement.className = key;
-        newElement.style = "display:none;";
+        newElement.style = (TIME_UNITS.includes(key)) ? "display:visible" : "display:none;";
         newElement.innerHTML = countdown[key];
         countdownElement.appendChild(newElement);
     }
