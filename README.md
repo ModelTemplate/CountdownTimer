@@ -44,7 +44,7 @@ If you want to use this countdown timer on [FANDOM](https://en.wikipedia.org/wik
 ## Notes
 * [FANDOM](https://en.wikipedia.org/wiki/Fandom_(website)) uses [MediaWiki](https://en.wikipedia.org/wiki/MediaWiki) 1.33.3 as of 1/29/2021.
 * Its [ResourceLoader](https://www.mediawiki.org/wiki/ResourceLoader) supports [ES3](https://www-archive.mozilla.org/js/language/E262-3.pdf) syntax and modern features of JavaScript such as Sets, Maps, Promises, and etc.
-* There is **no** support for classes, arrow functions, inline getters, and etc.
+* There is **no** support for classes, arrow functions, inline getters, let keyword, for...of statement, and etc.
 
 ## Related Links
 ### Code

@@ -190,13 +190,6 @@ function updateTimer(timerParams, num) {
     // time string will result in "0Y0M0D02h00m00s" thus far
     let timeUnits = getDisplayUnits(timerParams.dateLabels);
 
-    // Separates each time period in the time string by the specified cd.separators
-    // (i.e. for 120 minutes & "hh mm ss" & "single" & " " or "&nbsp;": 
-    // years = 0Y ; months = 0M ; days = 0D ; hours = 02h ;
-    // minutes = 00m ; seconds = 00s)
-    // time string will result in "0Y 0M 0D 02h 00m 00s" thus far
-    let separators = timerParams.separators;
-
     // When loop iterations reaches loop limit, hide normal text, hide delay
     // text, hide normal/delay time periods, and only show end of loop text
     if ((numLoops === loopLimit) && (endDate.getTime() <= now.getTime())) {
@@ -217,7 +210,7 @@ function updateTimer(timerParams, num) {
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:visible");
         if (delayDisplay) {
             // Adding the time values onto the page for delayed time period
-            $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffByUnitDelay, unitCounts, unitLeadingZeroesDelay, timeUnits, separators));
+            $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffByUnitDelay, timeUnits));
         } else {
             $("#timer_" + num).html("");
         }
@@ -236,7 +229,7 @@ function updateTimer(timerParams, num) {
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
         document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
         // Adding the time values onto the page for "true" countdown
-        $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffByUnit, unitCounts, unitLeadingZeroes, timeUnits, separators));
+        $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffByUnit, timeUnits));
     }
     updateBaroTimers(num, numLoops);
 }
