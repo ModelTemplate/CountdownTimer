@@ -1,8 +1,7 @@
 // Countdown timer that is accurate to the second and accounts for Daylight Savings Time (DST)
+// Example: a countdown of loopTime=30 seconds and a delayTime=10 seconds will have a delay timer start a 
+// count down from 9 to 0 seconds and the actual timer start a count down from 19 to 0 seconds.
 // Reference: https://www.w3schools.com/howto/howto_js_countdown.asp
-
-// TODO: Fix delay timer appearing in middle of actual countdown even though actual countdown has not
-// gone down to zero
 
 // All of these CSS classes must be present on page in order for countdown timer to function
 const COUNTDOWN_CLASSES = ["seedDate", "bText", "bDelayText", "timer",
@@ -188,21 +187,6 @@ function updateTimer(timerParams, num) {
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
         $("#timer_" + num).html("");
 
-    // When delay time reaches inputted delay time show delay text, hide normal
-    // text, and only show delay time periods specified by date format
-    } else if (Math.min(timeDiff, timeDiffDelay) === timeDiffDelay /*loopTime - timeDiff < delayTime/*timeDiff - timeDiffDelay < 0*/) {
-        document.getElementById("endText_" + num).setAttribute("style", "display:none");
-        document.getElementById("bText_" + num).setAttribute("style", "display:none");
-        document.getElementById("aText_" + num).setAttribute("style", "display:none");
-        document.getElementById("bDelayText_" + num).setAttribute("style", "display:visible");
-        document.getElementById("aDelayText_" + num).setAttribute("style", "display:visible");
-        if (delayDisplay) {
-            // Adding the time values onto the page for delayed time period
-            $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffByUnitDelay, timeUnits));
-        } else {
-            $("#timer_" + num).html("");
-        }
-    
     // While delay time has yet to reach inputted delay time show normal text,
     // hide delay text, and only show normal time periods specified by date 
     // format
@@ -210,14 +194,29 @@ function updateTimer(timerParams, num) {
     // years = ; months = ; days = ; hours = 02h ;
     // minutes = 00m ; seconds = 00s)
     // Time string will result in "02h 00m 00s" thus far
-    } else {
+    } else if (Math.min(timeDiff, timeDiffDelay) === timeDiffDelay) {
         document.getElementById("endText_" + num).setAttribute("style", "display:none");
         document.getElementById("bText_" + num).setAttribute("style", "display:visible");
         document.getElementById("aText_" + num).setAttribute("style", "display:visible");
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
         document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
         // Adding the time values onto the page for "true" countdown
-        $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffByUnit, timeUnits));
+        $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffByUnitDelay, timeUnits));
+    
+    // When delay time reaches inputted delay time show delay text, hide normal
+    // text, and only show delay time periods specified by date format
+    } else {
+        document.getElementById("endText_" + num).setAttribute("style", "display:none");
+        document.getElementById("bText_" + num).setAttribute("style", "display:none");
+        document.getElementById("aText_" + num).setAttribute("style", "display:none");
+        document.getElementById("bDelayText_" + num).setAttribute("style", "display:visible");
+        document.getElementById("aDelayText_" + num).setAttribute("style", "display:visible");
+        // Adding the time values onto the page for delayed time period
+        if (delayDisplay) {
+            $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffByUnit, timeUnits));
+        } else {
+            $("#timer_" + num).html("");
+        }
     }
     updateBaroTimers(num, numLoops);
 }
