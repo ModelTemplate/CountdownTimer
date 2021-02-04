@@ -61,6 +61,7 @@ function Countdown({
     this.separators = separators;
 }
 
+// TODO: Why do timer elements use Ariel font?
 /**
  * Add HTML elements related to countdown to DOM
  * @param {*} countdown - a Countdown object

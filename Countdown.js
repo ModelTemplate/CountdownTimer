@@ -174,14 +174,6 @@ function updateTimer(timerParams, num) {
     // time string will result in "000200" thus far
     let timeDiffByUnit = calcTimeDiffByUnit(timeDiff, dateFormat);
     let timeDiffByUnitDelay = calcTimeDiffByUnit(timeDiffDelay, dateFormat);
-	
-    // Based on the specified time periods' desired format, gives time string
-    // leading zeroes
-    // (i.e. for 120 minutes & "hh mm ss": years = 0; months = 0; days = 0;
-    // hours = 02; minutes = 00; seconds = 00)
-    // time string will result in "000020000" thus far
-    // let unitLeadingZeroes = getLeadingZeroesPerUnit(timeDiffByUnit, unitCounts);
-    // let unitLeadingZeroesDelay = getLeadingZeroesPerUnit(timeDiffByUnitDelay, unitCounts);
 
     // Based on the specified time periods' desired units, gives each time
     // period in the string certain units
@@ -362,31 +354,6 @@ function calcTimeDiffByUnit(timeDiff, dateFormat) {
 }
 
 /**
- * Get leading zeroes to be displayed for countdown timer per time unit.
- * @param {*} timeDiffByUnit - a dictionary of time differences by time unit
- * @param {*} unitCounts - a dictionary of counts by time unit
- * @returns a dictionary that contains number of leading zeroes to be displayed per time unit
- */
-function getLeadingZeroesPerUnit(timeDiffByUnit, unitCounts) {
-    let unitLeadingZeroes = {
-        Y: "",
-        M: "",
-        D: "",
-        h: "",
-        m: "",
-        s: ""
-    };
-    for (let unit of Object.keys(unitCounts)) {
-        for (let i = 1; i < unitCounts[unit]; i++) {
-            if (timeDiffByUnit[unit] < Math.pow(10, unitCounts[unit] - i)) {
-                unitLeadingZeroes[unit] = "0" + unitLeadingZeroes[unit];
-            }
-        }
-    }
-    return unitLeadingZeroes;
-}
-
-/**
  * Get display units for each time unit.
  * @param {*} dateLabels - a string
  * @returns a dictionary that contains display strings per time unit
@@ -426,12 +393,12 @@ function formatTimerNumbers(dateFormat, timeDiffByUnit, timeUnits) {
     let formatArr = dateFormat.split(/[^A-Za-z]/);  // e.g. ["YYYY", "MM", "DD"]
     console.log(formatArr);
     for (let elem of formatArr) {
-        let text = timeDiffByUnit[elem.charAt(0)] + timeUnits[elem.charAt(0)];
-        console.log(text);
+        let text = timeDiffByUnit[elem.charAt(0)] + "";
+        text = text.padStart(elem.length, "0");  // padding zeroes for uniformity
+        text += timeUnits[elem.charAt(0)];  // adding unit display (e.g. "5 Years")
         let regex = new RegExp(elem);
         timerText = timerText.replace(regex, text);
     }
-    // console.log(timerText);
     return timerText;
 }
 
