@@ -1,4 +1,5 @@
-// Countdown timer that is accurate to the second and accounts for Daylight Savings Time (DST)
+// Countdown timer that is accurate to the second and accounts for Daylight Savings Time (DST) unless
+// otherwise specified.
 // Example: a countdown of loopTime=30 seconds and a delayTime=10 seconds will have a delay timer start a 
 // count down from 9 to 0 seconds and the actual timer start a count down from 19 to 0 seconds.
 // Reference: https://www.w3schools.com/howto/howto_js_countdown.asp
