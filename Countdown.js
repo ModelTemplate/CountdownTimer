@@ -153,7 +153,11 @@ function updateTimer(timerParams, num) {
     // time string will result in "00021207200" thus far
     let timeDiff = calculateTimeDiff(now, endDate, dstOffset);  // in milliseconds, rounded to the nearest thousandths place
     let timeDiffDelay = calculateTimeDiff(now, endDateDelay, dstOffsetDelay);
-    console.log("Loop time: " + loopTime + " | Time diff: " + timeDiff + " | Delay time diff: " + timeDiffDelay + " | Loop time - time diff " + (loopTime - timeDiff));
+    // console.log("Loop time: " + loopTime + 
+    //     " | Time diff: " + timeDiff + 
+    //     " | Delay time diff: " + timeDiffDelay + 
+    //     " | Loop time - time diff " + (loopTime - timeDiff)
+    // );
 
     // Finds what time periods the specified date format wants
     let unitCounts = extractUnitCounts(timerParams.dateFormat);

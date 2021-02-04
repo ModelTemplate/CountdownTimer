@@ -1,45 +1,72 @@
 // Generating HTML for testing
+// References:
 // https://www.markhansen.co.nz/javascript-optional-parameters/
+// https://stackoverflow.com/questions/50715033/javascript-constructor-with-optional-parameters
+
+document.body.appendChild(document.createElement("h3"));
+generateCountdownHTML(new Countdown());
+generateCountdownHTML(new Countdown({ loopTime: 10 }), "Testing 10 second loop for ∞ times");
+generateCountdownHTML(new Countdown({ loopTime: 1, loopUnit: "m" }), "Testing one minute loop for ∞ times");
+generateCountdownHTML(new Countdown({ loopTime: 1, loopUnit: "h" }), "Testing one hour loop for ∞ times");
+generateCountdownHTML(new Countdown({ loopTime: 1, loopUnit: "D", loopLimit: 1000 }), "Testing one day loop for 1000 times");
+generateCountdownHTML(new Countdown({ loopTime: 1, loopUnit: "M", loopLimit: 1000 }), "Testing one month loop for 1000 times");
+generateCountdownHTML(new Countdown({ loopTime: 1, loopUnit: "Y", loopLimit: 1000 }), "Testing one year loop for 1000 times");
+generateCountdownHTML(new Countdown({ loopTime: 10, loopLimit: 0 }), "Testing 10 second loop for 0 times");
+generateCountdownHTML(new Countdown({ 
+    loopTime: 1, loopUnit: "Y", loopLimit: 1000, bText: "Countdown (", aText: ")", 
+    dateFormat: "YYYY MM DD HHHH MMMM SSSS", dateLabels: "full", separators: "-"
+}), "Testing formatting");
+generateCountdownHTML(new Countdown({ loopTime: 10, delayTime: 5 }), "Testing delay timer");
 
 /**
- * Represents a countdown timer
- * @param {*} seedDate 
- * @param {*} loopTime 
- * @param {*} loopUnit 
- * @param {*} options 
+ * Represents a countdown timer.
+ * @param {*} param0 - a dictionary of parameters for countdown timer
  */
-function Countdown(seedDate, loopTime, loopUnit, options) {
-    var options = options ?? {};
-
-    this.seedDate = seedDate ?? "January 1, 1970 00:00:00 UTC";
-    this.loopTime = loopTime ?? 60;
-    this.loopUnit = loopUnit ?? "s";
-
-    this.loopLimit = options.loopLimit || -1;
-    this.bText = options.bText || "";
-    this.bDelayText = options.bDelayText || "";
-    this.aText = options.aText || "";
-    this.aDelayText = options.aDelayText || "";
-    this.endText = options.endText || "";
-    this.delayTime = options.delayTime || 0;
-    this.delayUnit = options.delayUnit || "s";
-    this.delayDisplay = options.delayDisplay || "";
-    this.dst = options.dst || "";
-    this.dateFormat = options.dateFormat || "YY MM DD hh mm ss";
-    this.dateLabels = options.dateLabels || "single";
-    this.separators = options.separators || " ";
+function Countdown({
+    seedDate = "January 1, 1970 00:00:00 UTC", 
+    loopTime = 60, 
+    loopUnit = "s", 
+    loopLimit = -1, 
+    bText = "Timer Ends In", 
+    bDelayText = "Delay Timer Ends In", 
+    aText = "", 
+    aDelayText = "", 
+    endText = "Countdown Complete", 
+    delayTime = 0, 
+    delayUnit = "s", 
+    delayDisplay = true, 
+    dst = true, 
+    dateFormat = "YY MM DD hh mm ss", 
+    dateLabels = "single", 
+    separators = " "
+} = {}) {
+    this.seedDate = seedDate;
+    this.loopTime = loopTime;
+    this.loopUnit = loopUnit;
+    this.loopLimit = loopLimit;
+    this.bText = bText;
+    this.bDelayText = bDelayText;
+    this.aText = aText;
+    this.aDelayText = aDelayText;
+    this.endText = endText;
+    this.delayTime = delayTime;
+    this.delayUnit = delayUnit;
+    this.delayDisplay = delayDisplay ? "" : "false";
+    this.dst = dst ? "" : "false";
+    this.dateFormat = dateFormat;
+    this.dateLabels = dateLabels;
+    this.separators = separators;
 }
-
-var countdown = new Countdown("January 30, 2021 22:35:00 UTC");
-console.log(countdown);
-generateHTML(countdown);
-generateHTML(new Countdown(null, 10, null));
 
 /**
  * Add HTML elements related to countdown to DOM
  * @param {*} countdown - a Countdown object
  */
-function generateHTML(countdown) {
+function generateCountdownHTML(countdown, testString = "Timer Test") {
+    let testHeader = document.createElement("h3");
+    testHeader.innerText = testString;
+    document.body.appendChild(testHeader);
+
     let countdownElement = document.createElement("span");
     countdownElement.className = "customcountdown";
     countdownElement.style = "font-size:18px;";
@@ -51,4 +78,5 @@ function generateHTML(countdown) {
         countdownElement.appendChild(newElement);
     }
     document.body.appendChild(countdownElement);
+    document.body.appendChild(document.createElement("hr"));
 }
