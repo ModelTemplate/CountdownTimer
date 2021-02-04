@@ -368,30 +368,6 @@ function calcTimeDiffByUnit(timeDiff, unitCounts) {
 }
 
 /**
- * Finding out how many digits to display on countdown timer for each time unit.
- * @param {*} dateFormat - string that represents date format; each unit is separated by spaces
- * (e.g. "YY MM DD hh mm ss")
- * @returns a dictionary that contains number of occurances per time unit
- */
-function extractUnitCounts(dateFormat) {
-    let unitCounts = {
-        Y: 0,
-        M: 0,
-        D: 0,
-        h: 0,
-        m: 0,
-        s: 0
-    };
-    dateFormat = (dateFormat === "") ? "YYMMDDhhmmss" 
-        : dateFormat.replace(/\s/g, "");   // removing whitespace
-    
-    for (let pos = 0; pos < dateFormat.length; pos++) {
-        unitCounts[dateFormat.charAt(pos)]++;
-    }
-    return unitCounts;
-}
-
-/**
  * Get leading zeroes to be displayed for countdown timer per time unit.
  * @param {*} timeDiffByUnit - a dictionary of time differences by time unit
  * @param {*} unitCounts - a dictionary of counts by time unit
