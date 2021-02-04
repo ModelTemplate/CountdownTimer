@@ -103,6 +103,10 @@ function updateTimer(timerParams, num) {
     let seedDate = new Date((timerParams.seedDate === "") ? "December 3, 2015 00:00:00 UTC" 
         : timerParams.seedDate);
 
+    if (isNaN(seedDate.getTime())) {
+        throw "ERROR: seedDate is not in a valid date format (e.g. \"December 3, 2015 00:00:00 UTC\").";
+    }
+
     // Time between loop iterations (i.e. duration of a loop)
     let loopTime = convertTimeToMilliseconds(timerParams.loopTime);
     // Maximum number of loop iterations; it loopLimit is less than 0, then effectively 
@@ -112,7 +116,8 @@ function updateTimer(timerParams, num) {
         : Number(timerParams.loopLimit);
 
     // Splits total loopTime into two time periods, one that is the delayed countdown (i.e.
-    // a countdown of the countdown) and the other is the actual countdown
+    // a countdown of the countdown) and the other is the actual countdown; timers switch 
+    // after the other timer reaches zero
     // (e.g. if delayTime == 20s and loopTime = 60s, the first 20s will be a 20s countdown
     // with delay text while the next 40s will be the actual countdown) 
     let delayTime = convertTimeToMilliseconds(timerParams.delayTime);
@@ -149,11 +154,11 @@ function updateTimer(timerParams, num) {
     // time string will result in "00021207200" thus far
     let timeDiff = calculateTimeDiff(now, endDate, dstOffset);  // in milliseconds, rounded to the nearest thousandths place
     let timeDiffDelay = calculateTimeDiff(now, endDateDelay, dstOffsetDelay);
-    // console.log("Loop time: " + loopTime + 
-    //     " | Time diff: " + timeDiff + 
-    //     " | Delay time diff: " + timeDiffDelay + 
-    //     " | Loop time - time diff " + (loopTime - timeDiff)
-    // );
+    console.log("Loop time: " + loopTime + 
+        " | Time diff: " + timeDiff + 
+        " | Delay time diff: " + timeDiffDelay + 
+        " | Loop time - time diff " + (loopTime - timeDiff)
+    );
 
     let dateFormat = (timerParams.dateFormat === "") ? "YY MM DD hh mm ss" 
         : timerParams.dateFormat;
@@ -185,7 +190,7 @@ function updateTimer(timerParams, num) {
 
     // When delay time reaches inputted delay time show delay text, hide normal
     // text, and only show delay time periods specified by date format
-    } else if (/* Math.min(timeDiff, timeDiffDelay) === timeDiffDelay */ loopTime - timeDiff < delayTime/*timeDiff - timeDiffDelay < 0*/) {
+    } else if (Math.min(timeDiff, timeDiffDelay) === timeDiffDelay /*loopTime - timeDiff < delayTime/*timeDiff - timeDiffDelay < 0*/) {
         document.getElementById("endText_" + num).setAttribute("style", "display:none");
         document.getElementById("bText_" + num).setAttribute("style", "display:none");
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
@@ -317,10 +322,12 @@ function findEndDate(seedDate, delayTime, numLoops, loopTime) {
  * @returns time difference in milliseconds, rounded to the nearest thousands
  */
 function calculateTimeDiff(now, endDate, dstOffset) {
-    // need to round to avoid skipping seconds
+    // need to round to reduce skipping seconds (can still rarely happen)
+    // especially when counting down to zero
+    // since function calls are not instantaneous and take time to run
     // (example case: 7041 milliseconds => 5999 milliseconds)
     let timeDiff = (endDate.getTime() - now.getTime()) + dstOffset;
-    return Math.round(timeDiff / 1000) * 1000;
+    return Math.floor(timeDiff / 1000) * 1000;
 }
 
 /**
