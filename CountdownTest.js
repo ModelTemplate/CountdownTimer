@@ -3,8 +3,6 @@
 // https://www.markhansen.co.nz/javascript-optional-parameters/
 // https://stackoverflow.com/questions/50715033/javascript-constructor-with-optional-parameters
 
-const TIME_UNITS = ["years", "months", "days", "hours", "minutes", "seconds"];
-
 generateCountdownHTML(new Countdown());
 generateCountdownHTML(new Countdown({ loopTime: 10 }), "Testing 10 second loop for ∞ times");
 generateCountdownHTML(new Countdown({ loopTime: 1, loopUnit: "m" }), "Testing one minute loop for ∞ times");
@@ -49,12 +47,7 @@ function Countdown({
     this.bText = bText;
     this.bDelayText = bDelayText;
 
-    this.years = "";
-    this.months = "";
-    this.days = "";
-    this.hours = "";
-    this.minutes = "";
-    this.seconds = "";
+    this.timer = "";
 
     this.aText = aText;
     this.aDelayText = aDelayText;
@@ -83,7 +76,7 @@ function generateCountdownHTML(countdown, testString = "Timer Test") {
     for (let key of Object.keys(countdown)) {
         let newElement = document.createElement("span");
         newElement.className = key;
-        newElement.style = (TIME_UNITS.includes(key)) ? "display:visible;" : "display:none;";
+        newElement.style = (key === "timer") ? "display:visible;" : "display:none;";
         newElement.innerHTML = countdown[key];
         countdownElement.appendChild(newElement);
     }

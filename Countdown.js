@@ -4,10 +4,13 @@
 // TODO: Fix delay timer appearing in middle of actual countdown even though actual countdown has not
 // gone down to zero
 
+// TODO: Merge loopTime with loopUnit, delayTime with delayUnit, and dateFormat with separators
+// (e.g. loopTime = "5s", delayTime = "10Y", dateFormat = "YY-MM-DD hh:mm:ss")
+
 // All of these CSS classes must be present on page in order for countdown timer to function
-const COUNTDOWN_CLASSES = ["seedDate", "bText", "bDelayText", "years", "months", "days",
-        "hours", "minutes", "seconds", "aText", "aDelayText", "loopTime", "loopUnit",
-        "loopLimit", "endText", "delayTime", "delayUnit", "delayDisplay", "dst",
+const COUNTDOWN_CLASSES = ["seedDate", "bText", "bDelayText", "timer",
+        "aText", "aDelayText", "loopTime", "loopUnit", "loopLimit", 
+        "endText", "delayTime", "delayUnit", "delayDisplay", "dst",
         "dateFormat", "dateLabels", "separators"];
 Object.freeze(COUNTDOWN_CLASSES);
 
@@ -202,9 +205,7 @@ function updateTimer(timerParams, num) {
         document.getElementById("aText_" + num).setAttribute("style", "display:none");
         document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
-        for (let unit of Object.keys(TIME_UNIT_ABBR)) {
-            $("#" + unit.toLowerCase() + "s_" + num).html("");
-        }
+        $("#timer_" + num).html("");
 
     // When delay time reaches inputted delay time show delay text, hide normal
     // text, and only show delay time periods specified by date format
@@ -216,11 +217,9 @@ function updateTimer(timerParams, num) {
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:visible");
         if (delayDisplay) {
             // Adding the time values onto the page for delayed time period
-            formatTimerNumbers(timeDiffByUnitDelay, unitCounts, unitLeadingZeroesDelay, timeUnits, separators, num);
+            $("#timer_" + num).html(formatTimerNumbers(timeDiffByUnitDelay, unitCounts, unitLeadingZeroesDelay, timeUnits, separators));
         } else {
-            for (let unit of Object.keys(TIME_UNIT_ABBR)) {
-                $("#" + unit.toLowerCase() + "s_" + num).html("");
-            }
+            $("#timer_" + num).html("");
         }
     
     // While delay time has yet to reach inputted delay time show normal text,
@@ -237,7 +236,7 @@ function updateTimer(timerParams, num) {
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
         document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
         // Adding the time values onto the page for "true" countdown
-        formatTimerNumbers(timeDiffByUnit, unitCounts, unitLeadingZeroes, timeUnits, separators, num);
+        $("#timer_" + num).html(formatTimerNumbers(timeDiffByUnit, unitCounts, unitLeadingZeroes, timeUnits, separators));
     }
     updateBaroTimers(num, numLoops);
 }
@@ -454,7 +453,7 @@ function getDisplayUnits(dateLabels) {
  * @param {*} num - countdown timer instance
  * @returns a string of the formatted text
  */
-function formatTimerNumbers(timeDiffByUnit, unitCounts, unitLeadingZeroes, timeUnits, separators, num) {
+function formatTimerNumbers(timeDiffByUnit, unitCounts, unitLeadingZeroes, timeUnits, separators) {
     let timerText = "";
     for (let unit of Object.keys(TIME_UNIT_ABBR)) {
         let unitAbbr = TIME_UNIT_ABBR[unit];
@@ -463,7 +462,7 @@ function formatTimerNumbers(timeDiffByUnit, unitCounts, unitLeadingZeroes, timeU
             if (unitAbbr !== "s") {
                 text += separators;
             }
-            $("#" + unit.toLowerCase() + "s_" + num).html(text);
+            timerText += text;
         }
     }
     return timerText;
