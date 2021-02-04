@@ -1,8 +1,7 @@
 // Countdown timer that is accurate to the second and accounts for Daylight Savings Time (DST)
+// Example: a countdown of loopTime=30 seconds and a delayTime=10 seconds will have a delay timer start a 
+// count down from 9 to 0 seconds and the actual timer start a count down from 19 to 0 seconds.
 // Reference: https://www.w3schools.com/howto/howto_js_countdown.asp
-
-// TODO: Fix delay timer appearing in middle of actual countdown even though actual countdown has not
-// gone down to zero
 
 // All of these CSS classes must be present on page in order for countdown timer to function
 const COUNTDOWN_CLASSES = ["seedDate", "bText", "bDelayText", "timer",
@@ -78,7 +77,7 @@ function countdownInit() {
     updateTimers();
     console.log("Countdown timers started.");
 
-    // Update timer every second
+    // Update timers every second
     setInterval(function() {
         updateTimers();
     }, 1000);
@@ -103,6 +102,10 @@ function updateTimer(timerParams, num) {
     let seedDate = new Date((timerParams.seedDate === "") ? "December 3, 2015 00:00:00 UTC" 
         : timerParams.seedDate);
 
+    if (isNaN(seedDate.getTime())) {
+        throw "ERROR: seedDate is not in a valid date format (e.g. \"December 3, 2015 00:00:00 UTC\").";
+    }
+
     // Time between loop iterations (i.e. duration of a loop)
     let loopTime = convertTimeToMilliseconds(timerParams.loopTime);
     // Maximum number of loop iterations; it loopLimit is less than 0, then effectively 
@@ -112,7 +115,8 @@ function updateTimer(timerParams, num) {
         : Number(timerParams.loopLimit);
 
     // Splits total loopTime into two time periods, one that is the delayed countdown (i.e.
-    // a countdown of the countdown) and the other is the actual countdown
+    // a countdown of the countdown) and the other is the actual countdown; timers switch 
+    // after the other timer reaches zero
     // (e.g. if delayTime == 20s and loopTime = 60s, the first 20s will be a 20s countdown
     // with delay text while the next 40s will be the actual countdown) 
     let delayTime = convertTimeToMilliseconds(timerParams.delayTime);
@@ -183,21 +187,6 @@ function updateTimer(timerParams, num) {
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
         $("#timer_" + num).html("");
 
-    // When delay time reaches inputted delay time show delay text, hide normal
-    // text, and only show delay time periods specified by date format
-    } else if (/* Math.min(timeDiff, timeDiffDelay) === timeDiffDelay */ loopTime - timeDiff < delayTime/*timeDiff - timeDiffDelay < 0*/) {
-        document.getElementById("endText_" + num).setAttribute("style", "display:none");
-        document.getElementById("bText_" + num).setAttribute("style", "display:none");
-        document.getElementById("aText_" + num).setAttribute("style", "display:none");
-        document.getElementById("bDelayText_" + num).setAttribute("style", "display:visible");
-        document.getElementById("aDelayText_" + num).setAttribute("style", "display:visible");
-        if (delayDisplay) {
-            // Adding the time values onto the page for delayed time period
-            $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffByUnitDelay, timeUnits));
-        } else {
-            $("#timer_" + num).html("");
-        }
-    
     // While delay time has yet to reach inputted delay time show normal text,
     // hide delay text, and only show normal time periods specified by date 
     // format
@@ -205,14 +194,29 @@ function updateTimer(timerParams, num) {
     // years = ; months = ; days = ; hours = 02h ;
     // minutes = 00m ; seconds = 00s)
     // Time string will result in "02h 00m 00s" thus far
-    } else {
+    } else if (Math.min(timeDiff, timeDiffDelay) === timeDiffDelay) {
         document.getElementById("endText_" + num).setAttribute("style", "display:none");
         document.getElementById("bText_" + num).setAttribute("style", "display:visible");
         document.getElementById("aText_" + num).setAttribute("style", "display:visible");
         document.getElementById("aDelayText_" + num).setAttribute("style", "display:none");
         document.getElementById("bDelayText_" + num).setAttribute("style", "display:none");
         // Adding the time values onto the page for "true" countdown
-        $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffByUnit, timeUnits));
+        $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffByUnitDelay, timeUnits));
+    
+    // When delay time reaches inputted delay time show delay text, hide normal
+    // text, and only show delay time periods specified by date format
+    } else {
+        document.getElementById("endText_" + num).setAttribute("style", "display:none");
+        document.getElementById("bText_" + num).setAttribute("style", "display:none");
+        document.getElementById("aText_" + num).setAttribute("style", "display:none");
+        document.getElementById("bDelayText_" + num).setAttribute("style", "display:visible");
+        document.getElementById("aDelayText_" + num).setAttribute("style", "display:visible");
+        // Adding the time values onto the page for delayed time period
+        if (delayDisplay) {
+            $("#timer_" + num).html(formatTimerNumbers(dateFormat, timeDiffByUnit, timeUnits));
+        } else {
+            $("#timer_" + num).html("");
+        }
     }
     updateBaroTimers(num, numLoops);
 }
@@ -317,10 +321,12 @@ function findEndDate(seedDate, delayTime, numLoops, loopTime) {
  * @returns time difference in milliseconds, rounded to the nearest thousands
  */
 function calculateTimeDiff(now, endDate, dstOffset) {
-    // need to round to avoid skipping seconds
+    // need to round to reduce skipping seconds (can still rarely happen)
+    // especially when counting down to zero
+    // since function calls are not instantaneous and take time to run
     // (example case: 7041 milliseconds => 5999 milliseconds)
     let timeDiff = (endDate.getTime() - now.getTime()) + dstOffset;
-    return Math.round(timeDiff / 1000) * 1000;
+    return Math.floor(timeDiff / 1000) * 1000;
 }
 
 /**
