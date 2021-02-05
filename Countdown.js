@@ -229,7 +229,7 @@ function getTimersElements() {
         for (var index in COUNTDOWN_CLASSES) {
             var className = COUNTDOWN_CLASSES[index];
             var element = document.getElementsByClassName(className)[i];
-            if (element == null) {
+            if (element === null) {
                 throw "ERROR: " + className + " CSS class is missing for countdown timer instance #" + i + ".";
             }
             // Gives each instance of repeating elements of same class unique ids
