@@ -240,8 +240,7 @@ function getTimersElements() {
     }
 	
     // Other optional classes related to countdown
-    for (var index in Object.keys(BARO_COUNTDOWN_CLASSES)) {
-        var platform = BARO_COUNTDOWN_CLASSES[index];
+    for (var platform in BARO_COUNTDOWN_CLASSES) {
         var className = BARO_COUNTDOWN_CLASSES[platform];
         if ($("." + className).length > 0) {
             var elements = document.getElementsByClassName(className);
@@ -331,24 +330,24 @@ function calculateTimeDiff(now, endDate, dstOffset) {
  */
 function getDisplayUnits(dateLabels) {
     var timeUnits = {};
-    var unit;
+    var unitAbbr;
     switch(dateLabels) {
         case "full":
-            for (var index in Object.keys(TIME_UNIT_ABBR)) {
-                unit = TIME_UNIT_ABBR[index];
-                timeUnits[TIME_UNIT_ABBR[unit]] = " " + unit + "s";
+            for (var unit in TIME_UNIT_ABBR) {
+                unitAbbr = TIME_UNIT_ABBR[unit];
+                timeUnits[unitAbbr] = " " + unit + "s";
             }
             break;
         case "single":
-            for (var index in Object.keys(TIME_UNIT_ABBR)) {
-                unit = TIME_UNIT_ABBR[index];
-                timeUnits[TIME_UNIT_ABBR[unit]] = TIME_UNIT_ABBR[unit];
+            for (var unit in TIME_UNIT_ABBR) {
+                unitAbbr = TIME_UNIT_ABBR[unit];
+                timeUnits[unitAbbr] = TIME_UNIT_ABBR[unit];
             }
             break;
         default:
-            for (var index in Object.keys(TIME_UNIT_ABBR)) {
-                unit = TIME_UNIT_ABBR[index];
-                timeUnits[TIME_UNIT_ABBR[unit]] = "";
+            for (var unit in TIME_UNIT_ABBR) {
+                unitAbbr = TIME_UNIT_ABBR[unit];
+                timeUnits[unitAbbr] = "";
             }
             break;
     }
@@ -391,8 +390,7 @@ function formatTimerNumbers(dateFormat, timeDiff, timeUnits) {
  * @param {*} numLoops - number of countdown timer loops that have passed
  */
 function updateBaroTimers(num, numLoops) {
-    for (var index in Object.keys(BARO_COUNTDOWN_CLASSES)) {
-        var platform = BARO_COUNTDOWN_CLASSES[index];
+    for (var platform in BARO_COUNTDOWN_CLASSES) {
         var className = BARO_COUNTDOWN_CLASSES[platform];
         if ($("." + className).length > 0) {
             $("." + className + "_" + num).html(baroRelayTracker(numLoops, platform));
