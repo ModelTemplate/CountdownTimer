@@ -331,19 +331,23 @@ function calculateTimeDiff(now, endDate, dstOffset) {
  */
 function getDisplayUnits(dateLabels) {
     var timeUnits = {};
+    var unit;
     switch(dateLabels) {
         case "full":
-            for (var unit of Object.keys(TIME_UNIT_ABBR)) {
+            for (var index in Object.keys(TIME_UNIT_ABBR)) {
+                unit = TIME_UNIT_ABBR[index];
                 timeUnits[TIME_UNIT_ABBR[unit]] = " " + unit + "s";
             }
             break;
         case "single":
-            for (var unit of Object.keys(TIME_UNIT_ABBR)) {
+            for (var index in Object.keys(TIME_UNIT_ABBR)) {
+                unit = TIME_UNIT_ABBR[index];
                 timeUnits[TIME_UNIT_ABBR[unit]] = TIME_UNIT_ABBR[unit];
             }
             break;
         default:
-            for (var unit of Object.keys(TIME_UNIT_ABBR)) {
+            for (var index in Object.keys(TIME_UNIT_ABBR)) {
+                unit = TIME_UNIT_ABBR[index];
                 timeUnits[TIME_UNIT_ABBR[unit]] = "";
             }
             break;
