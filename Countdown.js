@@ -406,6 +406,6 @@ function updateBaroTimers(num, numLoops) {
 function baroRelayTracker(count, platform) {
     var rotationNum = count % 4;
     var planet = platformRelayDict[platform][rotationNum];
-    return relayDict[planet] + " Relay, <a href=\"https://warframe.fandom.com/wiki/" 
-            + planet + "\">" + planet + "</a> (" + platform + ")<br/>";
+    return relayDict[planet] + " Relay, <a href=\"https://warframe.fandom.com/wiki/" + 
+            planet + "\">" + planet + "</a> (" + platform + ")<br/>";
 }
