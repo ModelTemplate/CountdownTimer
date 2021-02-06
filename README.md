@@ -17,15 +17,19 @@ Create a [Template](https://www.mediawiki.org/wiki/Help:Templates) page that tra
 
         <span class="timer"></span>
 
-        <span style="display:none" class="aText">&nbsp;(Placeholder text)</span>
-        <span style="display:none" class="aDelayText">&nbsp;(Placeholder delay text)</span>
+        <span style="display:none" class="aText">&nbsp;(Placeholder Text)</span>
+        <span style="display:none" class="aDelayText">&nbsp;(Placeholder Delay Text)</span>
         <span style="display:none" class="loopTime">10s</span>
         <span style="display:none" class="loopLimit">1000</span>
         <span style="display:none" class="endText">Countdown Complete</span>
         <span style="display:none" class="delayTime"></span>
-        <span style="display:none" class="delayDisplay">true</span>
+        <!-- Blank entry signals program to show delay timer -->
+        <span style="display:none" class="delayDisplay"></span>
+        <!-- Blank entry signals program to account for Daylight Savings Time -->
         <span style="display:none" class="dst"></span>
-        <span style="display:none" class="dateFormat"></span>
+        <!-- Y - Years, M - Months, D - Days, h - Hours, m - Minutes, s - Seconds>
+        <span style="display:none" class="dateFormat">YY MM DD hh mm ss</span>
+        <!-- Options are "", "single", or "full" -->
         <span style="display:none" class="dateLabels">single</span>
     </span>
 
