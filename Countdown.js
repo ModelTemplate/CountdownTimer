@@ -259,7 +259,7 @@ function getTimersElements() {
  * @returns time in milliseconds
  */
 function convertTimeToMilliseconds(time) {
-    var number = time.match(/\d+/);
+    var number = parseFloat(time);
     var unit = time.match(/[A-Za-z]+/);
     if (unit === null) {
         unit = "s";

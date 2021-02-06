@@ -25,6 +25,8 @@ generateCountdownHTML(new Countdown({ loopTime: "30s", delayTime: "10s", delayDi
 generateCountdownHTML(new Countdown({ loopLimit: -999 }), "Testing negative loopLimit");
 generateCountdownHTML(new Countdown({ bText: "", aText: "", dateLabels: "" }), "Testing no labels");
 generateCountdownHTML(new Countdown({ bText: "(", aText: ")", dateFormat: "hh:mm:ss", dateLabels: "" }), "Testing minimalistic timer");
+generateCountdownHTML(new Countdown({ loopTime: "1.5m" }), "Testing floating loopTime");
+generateCountdownHTML(new Countdown({ loopTime: " 1.5m   " }), "Testing loopTime input with whitespace");
 
 /**
  * Represents a countdown timer.
