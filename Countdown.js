@@ -315,12 +315,12 @@ function findEndDate(seedDate, delayTime, numLoops, loopTime) {
  * @returns time difference in milliseconds, rounded to the nearest thousands
  */
 function calculateTimeDiff(now, endDate, dstOffset) {
-    // need to round to reduce skipping seconds (can still rarely happen)
+    // Note that skipping seconds can rarely happen
     // especially when counting down to zero
     // since function calls are not instantaneous and take time to run
     // (example case: 7041 milliseconds => 5999 milliseconds)
     var timeDiff = (endDate.getTime() - now.getTime()) + dstOffset;
-    return Math.floor(timeDiff / 1000) * 1000;
+    return timeDiff;
 }
 
 /**
