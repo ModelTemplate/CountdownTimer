@@ -264,7 +264,7 @@ function convertTimeToMilliseconds(time) {
     if (unit === null) {
         unit = "s";
     }
-    if (number === null) {
+    if (isNaN(number)) {
         number = 0;
     }
     if (TIME_IN_MILLISECONDS[unit] !== undefined) {
