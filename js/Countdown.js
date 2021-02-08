@@ -135,10 +135,6 @@ function updateTimer(timerParams, num) {
 
     var endDate = findEndDate(seedDate, 0, numLoops, loopTime);
     var endDateDelay = findEndDate(seedDate, delayTime, numLoopsDelay, loopTime);
-    
-    // TODO: duplicate delay parameter may not be needed if we can figure out how to split one
-    // loopTime into two separate loops without adding additional parameters by doing some simple subtraction
-    // and comparison against delayTime 
 
     // Accounts for Daylight Saving Time (DST) between now and target date 
     // by default unless otherwise specified
